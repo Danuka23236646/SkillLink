@@ -1,4 +1,11 @@
 import React, { useState } from 'react'
+
+
+<div className="p-6">
+  <h1 className="text-3xl font-bold text-blue-600">Tailwind OK 🎉</h1>
+  <div className="mt-4 h-16 w-16 bg-emerald-500 rounded"></div>
+</div>
+
 import {
   Search,
   MapPin,
