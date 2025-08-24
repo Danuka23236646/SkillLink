@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "z8hwHwOprGM=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Asus Vivobook\\Documents\\GitHub\\SkillLink\\backend\\Backend.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Asus Vivobook\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.7\\microsoft.aspnetcore.openapi.9.0.7.nupkg.sha512",
+    "C:\\Users\\Asus Vivobook\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
