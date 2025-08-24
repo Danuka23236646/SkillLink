@@ -2,13 +2,38 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using EFCore.NamingConventions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Services ---
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddControllers(); // use Controllers (ProfilesController)
+
+// Swagger + Bearer auth support (so you can try JWT in Swagger)
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "SkillLink API", Version = "v1" });
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "Enter: Bearer {your JWT token}",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+    };
+    opt.AddSecurityDefinition("Bearer", securityScheme);
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { securityScheme, Array.Empty<string>() }
+    });
+});
+
+builder.Services.AddControllers(); // Controllers (e.g., ProfilesController, AuthController)
 
 builder.Services.AddCors(options =>
 {
@@ -30,6 +55,30 @@ builder.Services.AddDbContext<AppDbContext>(opts =>
     opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
         .UseSnakeCaseNamingConvention());
 
+// ---- JWT Authentication / Authorization ----
+var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key missing");
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false; // dev convenience; keep true in prod with HTTPS
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = !string.IsNullOrWhiteSpace(jwtIssuer),
+            ValidateAudience = !string.IsNullOrWhiteSpace(jwtAudience),
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // --- Middleware ---
@@ -41,6 +90,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("frontend");
+
+// Authentication/Authorization MUST be before MapControllers
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 
 // quick health

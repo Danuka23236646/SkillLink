@@ -166,3 +166,12 @@ C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Techn
 C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\BCrypt.Net-Next.dll
+C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
