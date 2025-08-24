@@ -12,8 +12,13 @@ public class AppDbContext : DbContext
     public DbSet<Education>        Educations        => Set<Education>();
     public DbSet<UploadedFile>     UploadedFiles     => Set<UploadedFile>();
 
+    // ✅ Add Users
+    public DbSet<User> Users => Set<User>();
+
     protected override void OnModelCreating(ModelBuilder b)
     {
+        base.OnModelCreating(b);
+
         // --- JobSeekerProfile ---
         b.Entity<JobSeekerProfile>(e =>
         {
@@ -40,7 +45,6 @@ public class AppDbContext : DbContext
              .HasForeignKey(x => x.ProfileId)
              .OnDelete(DeleteBehavior.Cascade);
 
-            // Timestamps (Postgres CURRENT_TIMESTAMP)
             e.Property(p => p.CreatedUtc).HasDefaultValueSql("CURRENT_TIMESTAMP");
             e.Property(p => p.UpdatedUtc).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
@@ -53,7 +57,6 @@ public class AppDbContext : DbContext
             e.Property(p => p.DurationLabel).HasMaxLength(60);
             e.Property(p => p.Description).HasMaxLength(2000);
 
-            // Map DateOnly to DATE in Postgres
             e.Property(p => p.StartDate).HasColumnType("date");
             e.Property(p => p.EndDate).HasColumnType("date");
         });
@@ -75,6 +78,15 @@ public class AppDbContext : DbContext
             e.Property(p => p.FileName).HasMaxLength(260);
             e.Property(p => p.ContentType).HasMaxLength(120);
             e.Property(p => p.Url).HasMaxLength(500);
+        });
+
+        // --- User ---
+        b.Entity<User>(e =>
+        {
+            e.Property(u => u.FullName).HasMaxLength(120);
+            e.Property(u => u.Email).HasMaxLength(160);
+            e.Property(u => u.Role).HasMaxLength(40);
+            e.HasIndex(u => u.Email).IsUnique(); // ✅ enforce unique email
         });
     }
 
