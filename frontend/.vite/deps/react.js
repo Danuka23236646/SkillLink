@@ -1,4 +1,4 @@
 import {
   require_react
-} from "./chunk-F6QRBXOP.js";
+} from "./chunk-QLT5P2KT.js";
 export default require_react();
