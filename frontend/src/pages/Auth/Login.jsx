@@ -1,16 +1,59 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
+import { authAPI, tokenManager } from '../../api/auth'
+
 export function Login({ onLogin }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [userType, setUserType] = useState('jobseeker')
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // In a real app, we would authenticate with Firebase here
-    onLogin(userType)
+    setLoading(true)
+    setError('')
+
+    try {
+      const response = await authAPI.login(email, password)
+      
+      // Store token and user data
+      tokenManager.setToken(response.token)
+      tokenManager.setUser({
+        id: response.id,
+        fullName: response.fullName,
+        email: response.email,
+        role: response.role,
+        isAuthenticated: true
+      })
+
+      // Call the onLogin callback with user data
+      onLogin({
+        id: response.id,
+        fullName: response.fullName,
+        email: response.email,
+        role: response.role,
+        isAuthenticated: true
+      })
+
+      // Redirect to appropriate page based on role
+      if (response.role === 'admin') {
+        navigate('/admin')
+      } else if (response.role === 'employer') {
+        navigate('/post-job')
+      } else {
+        navigate('/')
+      }
+    } catch (err) {
+      setError(err.message || 'Login failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
+
   return (
     <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gray-50">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -29,6 +72,11 @@ export function Login({ onLogin }) {
       </div>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          {error && (
+            <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+              {error}
+            </div>
+          )}
           <div className="mb-6">
             <div className="flex justify-center space-x-4">
               <button
@@ -76,6 +124,7 @@ export function Login({ onLogin }) {
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="you@example.com"
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -99,12 +148,14 @@ export function Login({ onLogin }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  disabled={loading}
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    disabled={loading}
                   >
                     {showPassword ? (
                       <EyeOff className="h-5 w-5" />
@@ -122,6 +173,7 @@ export function Login({ onLogin }) {
                   name="remember-me"
                   type="checkbox"
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  disabled={loading}
                 />
                 <label
                   htmlFor="remember-me"
@@ -142,9 +194,10 @@ export function Login({ onLogin }) {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                disabled={loading}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Sign in
+                {loading ? 'Signing in...' : 'Sign in'}
               </button>
             </div>
           </form>
@@ -167,8 +220,7 @@ export function Login({ onLogin }) {
                 >
                   <span className="sr-only">Sign in with Google</span>
                   <svg
-         
-           className="w-5 h-5"
+                    className="w-5 h-5"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                     aria-hidden="true"

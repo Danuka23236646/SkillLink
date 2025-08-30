@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 // The App component's contents are currently a placeholder — please update this file first for a new design / component!
 import {
   BrowserRouter as Router,
@@ -19,12 +19,18 @@ import { Sidebar } from './components/Layout/Sidebar'
 import { SavedJobs } from './pages/SavedJobs'
 import { Applications } from './pages/Applications'
 import { Settings } from './pages/Settings'
+import { tokenManager } from './api/auth'
+
 export default function App(){
-  // Mock authentication state - in a real app, this would come from Firebase
-  const [user, setUser] = useState({
-    isAuthenticated: true,
-    role: 'jobseeker', // Options: jobseeker, employer, admin
-  })
+  // Initialize authentication state from localStorage
+  const [user, setUser] = useState(() => {
+    const savedUser = tokenManager.getUser();
+    return savedUser || {
+      isAuthenticated: false,
+      role: null,
+    };
+  });
+
   // Shared savedJobs state that will be used across components
   const [savedJobs, setSavedJobs] = useState([
     {
@@ -70,20 +76,29 @@ export default function App(){
       status: 'expired',
     },
   ])
-  // Mock login function
-  const handleLogin = (role) => {
-    setUser({
-      isAuthenticated: true,
-      role: role,
-    })
+
+  // Login function
+  const handleLogin = (userData) => {
+    setUser(userData);
   }
-  // Mock logout function
+
+  // Logout function
   const handleLogout = () => {
+    tokenManager.clearAuth();
     setUser({
       isAuthenticated: false,
       role: null,
-    })
+    });
   }
+
+  // Check if user is authenticated on app load
+  useEffect(() => {
+    const savedUser = tokenManager.getUser();
+    if (savedUser) {
+      setUser(savedUser);
+    }
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar user={user} onLogout={handleLogout} />

@@ -27,6 +27,22 @@ public class ProfilesController : ControllerBase
         return Ok(list);
     }
 
+
+
+    // GET: api/profiles/user/{userId}
+    [HttpGet("user/{userId:int}")]
+    public async Task<ActionResult<JobSeekerProfile>> GetByUserId(int userId)
+    {
+        var profile = await _db.JobSeekerProfiles
+            .Include(x => x.Experience)
+            .Include(x => x.Education)
+            .Include(x => x.Files)
+            .FirstOrDefaultAsync(x => x.UserId == userId);
+
+        return profile is null ? NotFound() : Ok(profile);
+    }
+
+
     // GET: api/profiles/5
     [HttpGet("{id:int}")]
     public async Task<ActionResult<JobSeekerProfile>> GetOne(int id)
@@ -100,6 +116,10 @@ public class ProfilesController : ControllerBase
         e.Location  = dto.Location?.Trim() ?? "";
         e.About     = dto.About ?? "";
         e.IsPublic  = dto.IsPublic;
+
+
+        e.UserId    = dto.UserId;
+
         e.SkillsCsv = dto.Skills is { Length: > 0 }
             ? string.Join(',', dto.Skills.Select(s => s.Trim()).Where(s => s.Length > 0))
             : "";

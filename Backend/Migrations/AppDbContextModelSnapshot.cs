@@ -70,6 +70,97 @@ namespace Backend.Migrations
                     b.ToTable("educations", (string)null);
                 });
 
+
+
+            modelBuilder.Entity("Backend.Models.JobPosting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CompanyDescription")
+                        .HasMaxLength(1500)
+                        .HasColumnType("character varying(1500)")
+                        .HasColumnName("company_description");
+
+                    b.Property<string>("CompanyLogoUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("company_logo_url");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("company_name");
+
+                    b.Property<string>("CompanyWebsite")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("company_website");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_utc");
+
+                    b.Property<string>("Department")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("department");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("HideSalary")
+                        .HasColumnType("boolean")
+                        .HasColumnName("hide_salary");
+
+                    b.Property<string>("JobTitle")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("job_title");
+
+                    b.Property<string>("JobType")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("job_type");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("location");
+
+                    b.Property<decimal?>("MaxSalary")
+                        .HasColumnType("numeric")
+                        .HasColumnName("max_salary");
+
+                    b.Property<decimal?>("MinSalary")
+                        .HasColumnType("numeric")
+                        .HasColumnName("min_salary");
+
+                    b.Property<DateTime?>("UpdatedUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_job_postings");
+
+                    b.HasIndex("CreatedUtc")
+                        .HasDatabaseName("ix_job_postings_created_utc");
+
+                    b.HasIndex("JobTitle", "JobType")
+                        .HasDatabaseName("ix_job_postings_job_title_job_type");
+
+                    b.ToTable("job_postings", (string)null);
+                });
+
+
             modelBuilder.Entity("Backend.Models.JobSeekerProfile", b =>
                 {
                     b.Property<int>("Id")
@@ -137,8 +228,22 @@ namespace Backend.Migrations
                         .HasColumnName("updated_utc")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+
                     b.HasKey("Id")
                         .HasName("pk_job_seeker_profiles");
+
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_job_seeker_profiles");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_job_seeker_profiles_user_id");
+
 
                     b.ToTable("job_seeker_profiles", (string)null);
                 });
@@ -297,6 +402,19 @@ namespace Backend.Migrations
 
                     b.Navigation("Profile");
                 });
+
+
+
+            modelBuilder.Entity("Backend.Models.JobSeekerProfile", b =>
+                {
+                    b.HasOne("Backend.Models.User", "User")
+                        .WithOne("Profile")
+                        .HasForeignKey("Backend.Models.JobSeekerProfile", "UserId")
+                        .HasConstraintName("fk_job_seeker_profiles_users_user_id");
+
+                    b.Navigation("User");
+                });
+
 
             modelBuilder.Entity("Backend.Models.UploadedFile", b =>
                 {

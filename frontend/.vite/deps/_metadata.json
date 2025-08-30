@@ -1,12 +1,12 @@
 {
-<<<<<<< HEAD
+
   "hash": "3d0d0791",
   "configHash": "1082efea",
   "lockfileHash": "e173f8a4",
   "browserHash": "5a4b481e",
   "optimized": {},
-  "chunks": {}
-=======
+  "chunks": {},
+
   "hash": "60f18577",
   "configHash": "eaa1fe49",
   "lockfileHash": "e173f8a4",
@@ -45,5 +45,5 @@
       "file": "chunk-QLT5P2KT.js"
     }
   }
->>>>>>> main
+
 }
