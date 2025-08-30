@@ -70,6 +70,8 @@ namespace Backend.Migrations
                     b.ToTable("educations", (string)null);
                 });
 
+
+
             modelBuilder.Entity("Backend.Models.JobPosting", b =>
                 {
                     b.Property<int>("Id")
@@ -158,6 +160,7 @@ namespace Backend.Migrations
                     b.ToTable("job_postings", (string)null);
                 });
 
+
             modelBuilder.Entity("Backend.Models.JobSeekerProfile", b =>
                 {
                     b.Property<int>("Id")
@@ -225,6 +228,11 @@ namespace Backend.Migrations
                         .HasColumnName("updated_utc")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+
+                    b.HasKey("Id")
+                        .HasName("pk_job_seeker_profiles");
+
+
                     b.Property<int?>("UserId")
                         .HasColumnType("integer")
                         .HasColumnName("user_id");
@@ -235,6 +243,7 @@ namespace Backend.Migrations
                     b.HasIndex("UserId")
                         .IsUnique()
                         .HasDatabaseName("ix_job_seeker_profiles_user_id");
+
 
                     b.ToTable("job_seeker_profiles", (string)null);
                 });
@@ -394,6 +403,8 @@ namespace Backend.Migrations
                     b.Navigation("Profile");
                 });
 
+
+
             modelBuilder.Entity("Backend.Models.JobSeekerProfile", b =>
                 {
                     b.HasOne("Backend.Models.User", "User")
@@ -403,6 +414,7 @@ namespace Backend.Migrations
 
                     b.Navigation("User");
                 });
+
 
             modelBuilder.Entity("Backend.Models.UploadedFile", b =>
                 {
@@ -435,11 +447,6 @@ namespace Backend.Migrations
                     b.Navigation("Experience");
 
                     b.Navigation("Files");
-                });
-
-            modelBuilder.Entity("Backend.Models.User", b =>
-                {
-                    b.Navigation("Profile");
                 });
 #pragma warning restore 612, 618
         }
