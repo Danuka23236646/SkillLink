@@ -14,6 +14,13 @@ export async function getProfileById(id) {
   return res.json();
 }
 
+// GET profile by user ID
+export async function getProfileByUserId(userId) {
+  const res = await fetch(`${API_URL}/user/${userId}`);
+  if (!res.ok) throw new Error(`Failed to fetch profile for user ${userId}`);
+  return res.json();
+}
+
 // POST create new profile
 export async function createProfile(profile) {
   const res = await fetch(API_URL, {

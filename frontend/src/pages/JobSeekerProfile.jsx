@@ -1,118 +1,315 @@
 import React, { useState, useEffect } from "react";
-import { getProfiles, createProfile, updateProfile, deleteProfile } from "../api/profiles";
-import { User, Mail, Phone, MapPin, Briefcase } from "lucide-react";
+import { getProfileByUserId, createProfile, updateProfile } from "../api/profiles";
+import { tokenManager } from "../api/auth";
+import { User, Mail, Phone, MapPin, Briefcase, Edit, Save, X } from "lucide-react";
 
 export function JobSeekerProfile() {
-  const [profiles, setProfiles] = useState([]);
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [user, setUser] = useState(null);
 
-  // Load profiles on mount
+  // Get current user from localStorage
   useEffect(() => {
-    getProfiles()
-      .then(setProfiles)
-      .catch((err) => console.error("Failed to fetch profiles", err))
-      .finally(() => setLoading(false));
+    const currentUser = tokenManager.getUser();
+    setUser(currentUser);
+    
+    if (currentUser) {
+      loadUserProfile(currentUser.id);
+    }
   }, []);
 
-  // Save a sample profile
-  const handleSave = async () => {
-    const payload = {
-      fullName: "Alex Johnson",
-      jobTitle: "Senior Frontend Developer",
-      email: "alex.johnson@example.com",
-      phone: "+1 (555) 123-4567",
-      location: "San Francisco, CA",
-      about: "Passionate frontend developer...",
-      isPublic: true,
-      skills: ["React", "JavaScript", "TypeScript"],
-      experience: [],
-      education: [],
-      files: [],
-    };
-
+  const loadUserProfile = async (userId) => {
     try {
-      await createProfile(payload);
-      const updated = await getProfiles();
-      setProfiles(updated);
-      alert("Profile saved!");
+      // Try to get the user's profile by their ID
+      const userProfile = await getProfileByUserId(userId);
+      setProfile(userProfile);
     } catch (err) {
-      console.error(err);
-      alert("Save failed");
+      console.error("Failed to load profile", err);
+      // Create a default profile populated with user information
+      const defaultProfile = {
+        fullName: user?.fullName || "",
+        jobTitle: "",
+        email: user?.email || "",
+        phone: "",
+        location: "",
+        about: "",
+        isPublic: true,
+        skills: [],
+        experience: [],
+        education: [],
+        files: [],
+        userId: userId
+      };
+      setProfile(defaultProfile);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleSave = async () => {
+    if (!profile || !user) return;
+
+    try {
+      const payload = {
+        fullName: profile.fullName || user.fullName,
+        jobTitle: profile.jobTitle || "",
+        email: profile.email || user.email,
+        phone: profile.phone || "",
+        location: profile.location || "",
+        about: profile.about || "",
+        isPublic: profile.isPublic || true,
+        skills: profile.skills || [],
+        experience: profile.experience || [],
+        education: profile.education || [],
+        files: profile.files || [],
+        userId: user.id
+      };
+
+      if (profile.id) {
+        // Update existing profile
+        await updateProfile(profile.id, payload);
+      } else {
+        // Create new profile
+        const newProfile = await createProfile(payload);
+        setProfile({ ...profile, id: newProfile.id });
+      }
+      
+      setEditing(false);
+      alert("Profile saved successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save profile");
+    }
+  };
+
+  const handleCancel = () => {
+    setEditing(false);
+    // Reload the original profile
+    if (user) {
+      loadUserProfile(user.id);
+    }
+  };
+
+  const updateProfileField = (field, value) => {
+    setProfile(prev => ({ ...prev, [field]: value }));
+  };
+
   if (loading) {
-    return <p className="p-6 text-gray-500">Loading profiles...</p>;
+    return (
+      <div className="max-w-4xl mx-auto py-8">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <span className="ml-2 text-gray-600">Loading profile...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="max-w-4xl mx-auto py-8">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-800">Please log in to view your profile</h2>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-6xl mx-auto py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Profiles</h1>
-        <button
-          onClick={handleSave}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
-        >
-          Save Sample Profile
-        </button>
-      </div>
-
-      {profiles.length === 0 ? (
-        <p className="text-gray-500">No profiles found. Click Save to add one!</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {profiles.map((p) => (
-            <div
-              key={p.id}
-              className="bg-white rounded-xl shadow p-6 border border-gray-200 hover:shadow-lg transition"
-            >
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center">
-                  <User className="h-6 w-6 text-gray-500" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    {p.fullName}
-                  </h3>
-                  <p className="text-sm text-gray-500">{p.jobTitle}</p>
-                </div>
-              </div>
-
-              <div className="space-y-2 text-sm text-gray-600">
-                <p className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-gray-400" /> {p.email}
-                </p>
-                <p className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-gray-400" /> {p.phone}
-                </p>
-                <p className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-gray-400" /> {p.location}
-                </p>
-              </div>
-
-              <div className="mt-4">
-                <h4 className="text-sm font-medium text-gray-700">Skills:</h4>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {p.skillsCsv?.split(",").map((s, i) => (
-                    <span
-                      key={i}
-                      className="bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-xs"
-                    >
-                      {s}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <button className="text-blue-600 text-sm font-medium hover:underline flex items-center gap-1">
-                  <Briefcase className="h-4 w-4" /> View Details
+    <div className="max-w-4xl mx-auto py-8">
+      <div className="bg-white rounded-xl shadow-lg p-8">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">My Profile</h1>
+          <div className="flex gap-2">
+            {!editing ? (
+              <button
+                onClick={() => setEditing(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                <Edit className="h-4 w-4" />
+                Edit Profile
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={handleSave}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                >
+                  <Save className="h-4 w-4" />
+                  Save
                 </button>
+                <button
+                  onClick={handleCancel}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
+                >
+                  <X className="h-4 w-4" />
+                  Cancel
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Profile Content */}
+        <div className="space-y-6">
+          {/* Basic Info */}
+          <div className="flex items-start space-x-6">
+            <div className="h-24 w-24 rounded-full bg-gray-100 flex items-center justify-center">
+              <User className="h-12 w-12 text-gray-500" />
+            </div>
+            <div className="flex-1 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                {editing ? (
+                  <input
+                    type="text"
+                    value={profile?.fullName || user.fullName || ""}
+                    onChange={(e) => updateProfileField('fullName', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter your full name"
+                  />
+                ) : (
+                  <p className="text-lg font-semibold text-gray-900">{profile?.fullName || user.fullName || "Not specified"}</p>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+                {editing ? (
+                  <input
+                    type="text"
+                    value={profile?.jobTitle || ""}
+                    onChange={(e) => updateProfileField('jobTitle', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., Senior Frontend Developer"
+                  />
+                ) : (
+                  <p className="text-gray-600">{profile?.jobTitle || "Not specified"}</p>
+                )}
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* Contact Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              {editing ? (
+                <input
+                  type="email"
+                  value={profile?.email || user.email || ""}
+                  onChange={(e) => updateProfileField('email', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="your.email@example.com"
+                />
+              ) : (
+                <p className="flex items-center gap-2 text-gray-600">
+                  <Mail className="h-4 w-4 text-gray-400" />
+                  {profile?.email || user.email || "Not specified"}
+                </p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+              {editing ? (
+                <input
+                  type="tel"
+                  value={profile?.phone || ""}
+                  onChange={(e) => updateProfileField('phone', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="+1 (555) 123-4567"
+                />
+              ) : (
+                <p className="flex items-center gap-2 text-gray-600">
+                  <Phone className="h-4 w-4 text-gray-400" />
+                  {profile?.phone || "Not specified"}
+                </p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+              {editing ? (
+                <input
+                  type="text"
+                  value={profile?.location || ""}
+                  onChange={(e) => updateProfileField('location', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="San Francisco, CA"
+                />
+              ) : (
+                <p className="flex items-center gap-2 text-gray-600">
+                  <MapPin className="h-4 w-4 text-gray-400" />
+                  {profile?.location || "Not specified"}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* About */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">About</label>
+            {editing ? (
+              <textarea
+                value={profile?.about || ""}
+                onChange={(e) => updateProfileField('about', e.target.value)}
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Tell us about yourself, your experience, and what you're looking for..."
+              />
+            ) : (
+              <p className="text-gray-600">{profile?.about || "No description provided"}</p>
+            )}
+          </div>
+
+          {/* Skills */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Skills</label>
+            {editing ? (
+              <input
+                type="text"
+                value={profile?.skills?.join(', ') || ""}
+                onChange={(e) => updateProfileField('skills', e.target.value.split(',').map(s => s.trim()).filter(s => s))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="React, JavaScript, TypeScript, Node.js"
+              />
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {profile?.skills && profile.skills.length > 0 ? (
+                  profile.skills.map((skill, index) => (
+                    <span
+                      key={index}
+                      className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm"
+                    >
+                      {skill}
+                    </span>
+                  ))
+                ) : (
+                  <p className="text-gray-500">No skills listed</p>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Public/Private Toggle */}
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="isPublic"
+              checked={profile?.isPublic || false}
+              onChange={(e) => updateProfileField('isPublic', e.target.checked)}
+              disabled={!editing}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="isPublic" className="ml-2 text-sm text-gray-700">
+              Make my profile public
+            </label>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

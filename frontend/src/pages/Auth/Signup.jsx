@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Mail, Lock, User, Briefcase } from 'lucide-react'
+import { authAPI, tokenManager } from '../../api/auth'
+
 export function Signup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -9,15 +11,79 @@ export function Signup() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [userType, setUserType] = useState('jobseeker')
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
+
+  const validatePassword = (password) => {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+
+    if (password.length < minLength) {
+      return 'Password must be at least 8 characters long';
+    }
+    if (!hasUpperCase) {
+      return 'Password must contain at least one uppercase letter';
+    }
+    if (!hasLowerCase) {
+      return 'Password must contain at least one lowercase letter';
+    }
+    if (!hasNumber) {
+      return 'Password must contain at least one number';
+    }
+    return null;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // In a real app, we would register with Firebase here
-    console.log('Register as', userType, {
-      name,
-      email,
-      password,
-    })
+    setLoading(true)
+    setError('')
+
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    // Validate password strength
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setError(passwordError);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await authAPI.register(name, email, password, userType)
+      
+      // Store token and user data
+      tokenManager.setToken(response.token)
+      tokenManager.setUser({
+        id: response.id,
+        fullName: response.fullName,
+        email: response.email,
+        role: response.role,
+        isAuthenticated: true
+      })
+
+      // Redirect to appropriate page based on role
+      if (response.role === 'admin') {
+        navigate('/admin')
+      } else if (response.role === 'employer') {
+        navigate('/post-job')
+      } else {
+        navigate('/')
+      }
+    } catch (err) {
+      setError(err.message || 'Registration failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
+
   return (
     <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gray-50">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -36,6 +102,11 @@ export function Signup() {
       </div>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          {error && (
+            <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+              {error}
+            </div>
+          )}
           <div className="mb-6">
             <div className="flex justify-center space-x-4">
               <button
@@ -82,6 +153,7 @@ export function Signup() {
                   onChange={(e) => setName(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="John Smith"
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -106,6 +178,7 @@ export function Signup() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="you@example.com"
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -129,12 +202,14 @@ export function Signup() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  disabled={loading}
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    disabled={loading}
                   >
                     {showPassword ? (
                       <EyeOff className="h-5 w-5" />
@@ -169,12 +244,14 @@ export function Signup() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  disabled={loading}
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    disabled={loading}
                   >
                     {showConfirmPassword ? (
                       <EyeOff className="h-5 w-5" />
@@ -192,6 +269,7 @@ export function Signup() {
                 type="checkbox"
                 required
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                disabled={loading}
               />
               <label
                 htmlFor="terms"
@@ -210,9 +288,10 @@ export function Signup() {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                disabled={loading}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create account
+                {loading ? 'Creating account...' : 'Create account'}
               </button>
             </div>
           </form>

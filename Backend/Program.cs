@@ -6,8 +6,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Backend;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Debug: Print all configuration values
+Console.WriteLine("=== Configuration Debug ===");
+Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
+Console.WriteLine($"Connection String: {builder.Configuration.GetConnectionString("DefaultConnection")}");
+Console.WriteLine("=== End Configuration Debug ===");
 
 // --- Services ---
 builder.Services.AddEndpointsApiExplorer();
@@ -80,6 +87,28 @@ builder.Services
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+// Test database connection
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (!string.IsNullOrEmpty(connectionString))
+{
+    await ConnectionTest.TestConnection(connectionString);
+}
+
+// Initialize database
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    try
+    {
+        await DbInitializer.Initialize(context);
+    }
+    catch (Exception ex)
+    {
+        // Log the error but don't fail the application startup
+        Console.WriteLine($"Database initialization failed: {ex.Message}");
+    }
+}
 
 // --- Middleware ---
 if (app.Environment.IsDevelopment())
