@@ -118,6 +118,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(); 
 app.UseCors("frontend");
 
 // Authentication/Authorization MUST be before MapControllers

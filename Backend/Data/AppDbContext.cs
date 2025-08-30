@@ -12,6 +12,8 @@ public class AppDbContext : DbContext
     public DbSet<Education>        Educations        => Set<Education>();
     public DbSet<UploadedFile>     UploadedFiles     => Set<UploadedFile>();
 
+     public DbSet<JobPosting> JobPostings => Set<JobPosting>();//job post
+
     // ✅ Add Users
     public DbSet<User> Users => Set<User>();
 
@@ -19,6 +21,17 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(b);
 
+               // quick indices for search/sort//////////////////////////////////////////////////////job post
+                // --- JobPosting ---
+                    b.Entity<JobPosting>(e =>
+                    {
+                        e.HasIndex(j => j.CreatedUtc);
+                        e.HasIndex(j => new { j.JobTitle, j.JobType });
+                    });
+
+
+
+                    
         // --- JobSeekerProfile ---
         b.Entity<JobSeekerProfile>(e =>
         {
