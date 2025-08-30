@@ -20,7 +20,4 @@ public class User
     public string PasswordHash { get; set; } = string.Empty;
 
     public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
-
-    // Navigation property to profile
-    public JobSeekerProfile? Profile { get; set; }
 }

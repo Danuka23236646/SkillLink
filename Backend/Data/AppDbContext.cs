@@ -12,7 +12,9 @@ public class AppDbContext : DbContext
     public DbSet<Education>        Educations        => Set<Education>();
     public DbSet<UploadedFile>     UploadedFiles     => Set<UploadedFile>();
 
+
      public DbSet<JobPosting> JobPostings => Set<JobPosting>();//job post
+
 
     // ✅ Add Users
     public DbSet<User> Users => Set<User>();
@@ -20,6 +22,8 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder b)
     {
         base.OnModelCreating(b);
+
+
 
                // quick indices for search/sort//////////////////////////////////////////////////////job post
                 // --- JobPosting ---
@@ -32,6 +36,7 @@ public class AppDbContext : DbContext
 
 
                     
+
         // --- JobSeekerProfile ---
         b.Entity<JobSeekerProfile>(e =>
         {

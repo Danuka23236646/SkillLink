@@ -11,6 +11,7 @@ public class JobSeekerProfile
     [Key]
     public int Id { get; set; }
 
+
     // Link to User (nullable to avoid migration issues)
     [ForeignKey(nameof(User))]
     public int? UserId { get; set; }
