@@ -1,36 +1,3 @@
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\appsettings.Development.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\appsettings.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.staticwebassets.endpoints.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.exe
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.deps.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.runtimeconfig.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.dll
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.pdb
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Microsoft.OpenApi.dll
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.csproj.AssemblyReference.cache
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\rpswa.dswa.cache.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.AssemblyInfoInputs.cache
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.AssemblyInfo.cs
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.csproj.CoreCompileInputs.cache
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.sourcelink.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\rjimswa.dswa.cache.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\scopedcss\bundle\Backend.styles.css
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\staticwebassets.build.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\staticwebassets.build.json.cache
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\staticwebassets.development.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.csproj.Up2Date
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.dll
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\refint\Backend.dll
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.pdb
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.genruntimeconfig.cache
-C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\ref\Backend.dll
 C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\appsettings.Development.json
 C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\appsettings.json
 C:\Users\Vishmitha Hashendra\OneDrive - Sri Lanka Institute of Information Technology\Desktop\skilllink\SkillLink\backend\bin\Debug\net9.0\package-lock.json
@@ -320,12 +287,28 @@ C:\Users\dasit\OneDrive\Documents\SkillLink\Backend\obj\Debug\net9.0\refint\Back
 C:\Users\dasit\OneDrive\Documents\SkillLink\Backend\obj\Debug\net9.0\Backend.pdb
 C:\Users\dasit\OneDrive\Documents\SkillLink\Backend\obj\Debug\net9.0\Backend.genruntimeconfig.cache
 C:\Users\dasit\OneDrive\Documents\SkillLink\Backend\obj\Debug\net9.0\ref\Backend.dll
+<<<<<<< Updated upstream
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\package-lock.json
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.staticwebassets.runtime.json
+=======
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\appsettings.Development.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\appsettings.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\package-lock.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.staticwebassets.endpoints.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.exe
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.deps.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.runtimeconfig.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.dll
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.pdb
+>>>>>>> Stashed changes
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\BCrypt.Net-Next.dll
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\EFCore.NamingConventions.dll
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Humanizer.dll
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+<<<<<<< Updated upstream
+=======
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
+>>>>>>> Stashed changes
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Microsoft.Build.Locator.dll
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Microsoft.CodeAnalysis.dll
@@ -354,6 +337,10 @@ C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Micro
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+<<<<<<< Updated upstream
+=======
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Microsoft.OpenApi.dll
+>>>>>>> Stashed changes
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Mono.TextTemplating.dll
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Npgsql.dll
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
@@ -433,3 +420,30 @@ C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\ru\Mi
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+<<<<<<< Updated upstream
+=======
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.csproj.AssemblyReference.cache
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\rpswa.dswa.cache.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.AssemblyInfoInputs.cache
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.AssemblyInfo.cs
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.csproj.CoreCompileInputs.cache
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.sourcelink.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\rjimswa.dswa.cache.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\scopedcss\bundle\Backend.styles.css
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\staticwebassets.build.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\staticwebassets.build.json.cache
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\staticwebassets.development.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\staticwebassets.build.endpoints.json
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.csproj.Up2Date
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.dll
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\refint\Backend.dll
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.pdb
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\Backend.genruntimeconfig.cache
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\obj\Debug\net9.0\ref\Backend.dll
+C:\Users\Asus Vivobook\Documents\GitHub\SkillLink\backend\bin\Debug\net9.0\Backend.staticwebassets.runtime.json
+>>>>>>> Stashed changes
