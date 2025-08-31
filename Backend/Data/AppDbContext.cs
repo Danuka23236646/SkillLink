@@ -40,6 +40,7 @@ public class AppDbContext : DbContext
         // --- JobSeekerProfile ---
         b.Entity<JobSeekerProfile>(e =>
         {
+            e.Property(p => p.ProfileImageUrl).HasMaxLength(500);
             e.Property(p => p.FullName).HasMaxLength(120);
             e.Property(p => p.JobTitle).HasMaxLength(120);
             e.Property(p => p.Email).HasMaxLength(160);

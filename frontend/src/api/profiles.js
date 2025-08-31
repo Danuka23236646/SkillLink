@@ -51,3 +51,4 @@ export async function deleteProfile(id) {
   if (!res.ok) throw new Error(`Failed to delete profile with id ${id}`);
   return true;
 }
+

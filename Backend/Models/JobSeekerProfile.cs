@@ -17,6 +17,9 @@ public class JobSeekerProfile
     public int? UserId { get; set; }
     public User? User { get; set; }
 
+    public string? ProfileImageUrl { get; set; }
+
+
     // Personal
     [Required, MaxLength(120)]
     public string FullName { get; set; } = string.Empty;

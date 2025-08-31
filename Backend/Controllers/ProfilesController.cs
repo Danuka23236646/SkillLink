@@ -116,7 +116,7 @@ public class ProfilesController : ControllerBase
         e.Location  = dto.Location?.Trim() ?? "";
         e.About     = dto.About ?? "";
         e.IsPublic  = dto.IsPublic;
-
+        e.ProfileImageUrl = dto.ProfileImageUrl?.Trim();
 
         e.UserId    = dto.UserId;
 
@@ -179,6 +179,10 @@ public class ProfilesController : ControllerBase
 // ---------------- DTOs (shape them like your React state) ----------------
 
 public record ProfileDto(
+    
+    int? Id,
+    int UserId,   
+    string? ProfileImageUrl,   
     string? FullName,
     string? JobTitle,
     string? Email,
