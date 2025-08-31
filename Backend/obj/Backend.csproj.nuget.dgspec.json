@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Asus Vivobook\\Documents\\GitHub\\SkillLink\\backend\\Backend.csproj": {}
+    "C:\\Users\\DVM\\Documents\\GitHub\\SkillLink\\backend\\Backend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Asus Vivobook\\Documents\\GitHub\\SkillLink\\backend\\Backend.csproj": {
+    "C:\\Users\\DVM\\Documents\\GitHub\\SkillLink\\backend\\Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Asus Vivobook\\Documents\\GitHub\\SkillLink\\backend\\Backend.csproj",
+        "projectUniqueName": "C:\\Users\\DVM\\Documents\\GitHub\\SkillLink\\backend\\Backend.csproj",
         "projectName": "Backend",
-        "projectPath": "C:\\Users\\Asus Vivobook\\Documents\\GitHub\\SkillLink\\backend\\Backend.csproj",
-        "packagesPath": "C:\\Users\\Asus Vivobook\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Asus Vivobook\\Documents\\GitHub\\SkillLink\\backend\\obj\\",
+        "projectPath": "C:\\Users\\DVM\\Documents\\GitHub\\SkillLink\\backend\\Backend.csproj",
+        "packagesPath": "C:\\Users\\DVM\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\DVM\\Documents\\GitHub\\SkillLink\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Asus Vivobook\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\DVM\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -94,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
