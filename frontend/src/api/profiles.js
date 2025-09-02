@@ -18,6 +18,7 @@ export async function getProfileById(id) {
 // GET profile by user ID
 export async function getProfileByUserId(userId) {
   const res = await fetch(`${API_URL}/user/${userId}`);
+  if (res.status === 404) return null;         // ✅ treat as "no profile yet"
   if (!res.ok) throw new Error(`Failed to fetch profile for user ${userId}`);
   return res.json();
 }

@@ -20,6 +20,23 @@ export function Navbar({ user, onLogout }) {
     (user?.role === 'employer' || user?.role === 'admin') &&
     isEmployerRoute
 
+  // --- role-aware target for the profile button (user icon) ---
+  const role = String(user?.role || '').toLowerCase()
+  const profileHref = !user?.isAuthenticated
+    ? '/login'
+    : role === 'employer'
+    ? '/employer'
+    : role === 'admin'
+    ? '/admin'
+    : '/profile'
+  const profileLabel = !user?.isAuthenticated
+    ? 'Log In'
+    : role === 'employer'
+    ? 'Employer Profile'
+    : role === 'admin'
+    ? 'Admin Dashboard'
+    : 'My Profile'
+
   return (
     <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,7 +100,7 @@ export function Navbar({ user, onLogout }) {
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
             {user?.isAuthenticated ? (
               <div className="flex items-center space-x-4">
-                <Link to="/profile" className="text-gray-500 hover:text-gray-700">
+                <Link to={profileHref} className="text-gray-500 hover:text-gray-700" title={profileLabel}>
                   <User size={20} />
                 </Link>
                 <button onClick={onLogout} className="text-gray-500 hover:text-gray-700">

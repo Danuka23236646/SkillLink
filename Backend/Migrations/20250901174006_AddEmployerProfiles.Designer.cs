@@ -3,6 +3,7 @@ using System;
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250901174006_AddEmployerProfiles")]
+    partial class AddEmployerProfiles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -493,94 +496,6 @@ namespace Backend.Migrations
                         .HasDatabaseName("ix_work_experiences_profile_id");
 
                     b.ToTable("work_experiences", (string)null);
-                });
-
-            modelBuilder.Entity("Job", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CompanyDescription")
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)")
-                        .HasColumnName("company_description");
-
-                    b.Property<string>("CompanyLogoUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("company_logo_url");
-
-                    b.Property<string>("CompanyName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("company_name");
-
-                    b.Property<string>("CompanyWebsite")
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)")
-                        .HasColumnName("company_website");
-
-                    b.Property<DateTime>("CreatedUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_utc");
-
-                    b.Property<string>("Department")
-                        .HasMaxLength(120)
-                        .HasColumnType("character varying(120)")
-                        .HasColumnName("department");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(8000)
-                        .HasColumnType("character varying(8000)")
-                        .HasColumnName("description");
-
-                    b.Property<int?>("EmployerUserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employer_user_id");
-
-                    b.Property<bool>("HideSalary")
-                        .HasColumnType("boolean")
-                        .HasColumnName("hide_salary");
-
-                    b.Property<string>("JobTitle")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("job_title");
-
-                    b.Property<string>("JobType")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)")
-                        .HasColumnName("job_type");
-
-                    b.Property<string>("Location")
-                        .HasMaxLength(160)
-                        .HasColumnType("character varying(160)")
-                        .HasColumnName("location");
-
-                    b.Property<decimal?>("MaxSalary")
-                        .HasColumnType("numeric")
-                        .HasColumnName("max_salary");
-
-                    b.Property<decimal?>("MinSalary")
-                        .HasColumnType("numeric")
-                        .HasColumnName("min_salary");
-
-                    b.Property<DateTime>("UpdatedUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_utc");
-
-                    b.HasKey("Id")
-                        .HasName("pk_jobs");
-
-                    b.ToTable("jobs", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Models.Education", b =>
