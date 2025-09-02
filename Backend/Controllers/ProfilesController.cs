@@ -64,34 +64,43 @@ public class ProfilesController : ControllerBase
         _db.JobSeekerProfiles.Add(entity);
         await _db.SaveChangesAsync();
         return CreatedAtAction(nameof(GetOne), new { id = entity.Id }, entity);
+
+        entity.CreatedUtc = DateTime.UtcNow;
+        entity.UpdatedUtc = DateTime.UtcNow;
     }
 
-    // PUT: api/profiles/5
-    [HttpPut("{id:int}")]
-    public async Task<ActionResult<JobSeekerProfile>> Update(int id, [FromBody] ProfileDto dto)
-    {
-        var existing = await _db.JobSeekerProfiles
-            .Include(x => x.Experience)
-            .Include(x => x.Education)
-            .Include(x => x.Files)
-            .FirstOrDefaultAsync(x => x.Id == id);
+  // PUT: api/profiles/5
+[HttpPut("{id:int}")]
+public async Task<ActionResult<JobSeekerProfile>> Update(int id, [FromBody] ProfileDto dto)
+{
+    // 1) Declare and load
+    var existing = await _db.JobSeekerProfiles
+        .Include(x => x.Experience)
+        .Include(x => x.Education)
+        .Include(x => x.Files)
+        .FirstOrDefaultAsync(x => x.Id == id);
 
-        if (existing is null) return NotFound();
+    // 2) Guard
+    if (existing is null) return NotFound();
 
-        MapToEntity(dto, existing);
+    // 3) Map basic fields
+    MapToEntity(dto, existing);
+    existing.UpdatedUtc = DateTime.UtcNow;
 
-        // Replace children collections (simple, safe for your assignment)
-        _db.WorkExperiences.RemoveRange(existing.Experience);
-        _db.Educations.RemoveRange(existing.Education);
-        _db.UploadedFiles.RemoveRange(existing.Files);
+    // 4) Replace children collections (clear old, set new)
+    _db.WorkExperiences.RemoveRange(existing.Experience);
+    _db.Educations.RemoveRange(existing.Education);
+    _db.UploadedFiles.RemoveRange(existing.Files);
 
-        existing.Experience = dto.Experience?.Select(MapExperience).ToList() ?? new();
-        existing.Education  = dto.Education?.Select(MapEducation).ToList()   ?? new();
-        existing.Files      = dto.Files?.Select(MapFile).ToList()            ?? new();
+    existing.Experience = dto.Experience?.Select(MapExperience).ToList() ?? new();
+    existing.Education  = dto.Education?.Select(MapEducation).ToList()   ?? new();
+    existing.Files      = dto.Files?.Select(MapFile).ToList()            ?? new();
 
-        await _db.SaveChangesAsync();
-        return Ok(existing);
-    }
+    // 5) Save & return
+    await _db.SaveChangesAsync();
+    return Ok(existing);
+}
+
 
     // DELETE: api/profiles/5
     [HttpDelete("{id:int}")]

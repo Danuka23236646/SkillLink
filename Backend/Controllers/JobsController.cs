@@ -48,17 +48,23 @@ public class JobsController : ControllerBase
             .OrderByDescending(j => j.CreatedUtc)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(j => new JobSummaryDto
+            .Select(j => new JobResponse
             {
                 Id = j.Id,
                 JobTitle = j.JobTitle,
                 JobType = j.JobType,
                 Location = j.Location,
-                CompanyName = j.CompanyName,
+                Department = j.Department,
                 MinSalary = j.MinSalary,
                 MaxSalary = j.MaxSalary,
                 HideSalary = j.HideSalary,
-                CreatedUtc = j.CreatedUtc
+                Description = j.Description,
+                CompanyName = j.CompanyName,
+                CompanyWebsite = j.CompanyWebsite,
+                CompanyLogoUrl = j.CompanyLogoUrl,     // 👈 needed for logo in UI
+                CompanyDescription = j.CompanyDescription,
+                CreatedUtc = j.CreatedUtc,
+                UpdatedUtc = j.UpdatedUtc
             })
             .ToListAsync();
 
@@ -75,7 +81,7 @@ public class JobsController : ControllerBase
 
     // POST /api/jobs
     [HttpPost]
-    public async Task<ActionResult<JobPosting>> Create([FromBody] CreateJobDto dto)
+    public async Task<ActionResult<JobPosting>> Create([FromBody] CreateJobRequest dto)
     {
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
         if (dto.MinSalary.HasValue && dto.MaxSalary.HasValue && dto.MinSalary > dto.MaxSalary)
@@ -108,7 +114,7 @@ public class JobsController : ControllerBase
 
     // PUT /api/jobs/5
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<JobPosting>> Update(int id, [FromBody] UpdateJobDto dto)
+    public async Task<ActionResult<JobPosting>> Update(int id, [FromBody] UpdateJobRequest dto)
     {
         var job = await _db.JobPostings.FindAsync(id);
         if (job is null) return NotFound();

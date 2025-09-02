@@ -8,6 +8,7 @@ using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization; // 👈 added
 
 namespace Backend.Controllers;
 
@@ -76,6 +77,38 @@ public class AuthController : ControllerBase
         });
     }
 
+    // ---------- NEW: Change password ----------
+    public record ChangePasswordRequest(string CurrentPassword, string NewPassword);
+
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest req)
+    {
+        if (string.IsNullOrWhiteSpace(req.CurrentPassword) || string.IsNullOrWhiteSpace(req.NewPassword))
+            return BadRequest("Passwords are required.");
+
+        // Strength check: 8+ chars, uppercase, digit, special
+        if (!IsStrong(req.NewPassword))
+            return BadRequest("Password must be at least 8 characters and include an uppercase letter, a number, and a special character.");
+
+        var userId = GetUserIdFromClaims();
+        if (userId is null) return Unauthorized();
+
+        var user = await _db.Users.FindAsync(userId.Value);
+        if (user is null) return Unauthorized();
+
+        // Verify current password with BCrypt
+        var ok = BCrypt.Net.BCrypt.Verify(req.CurrentPassword, user.PasswordHash);
+        if (!ok) return BadRequest("Current password is incorrect.");
+
+        // Set new hash
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.NewPassword);
+        await _db.SaveChangesAsync();
+
+        return NoContent();
+    }
+    // -----------------------------------------
+
     private string GenerateJwt(User user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
@@ -98,5 +131,28 @@ public class AuthController : ControllerBase
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    // Helpers (keep private to this controller)
+    private int? GetUserIdFromClaims()
+    {
+        // Prefer "sub"; fall back to NameIdentifier if your JWT mapping adds it
+        var idStr = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
+                  ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        return int.TryParse(idStr, out var id) ? id : null;
+    }
+
+    private static bool IsStrong(string pwd)
+    {
+        if (string.IsNullOrEmpty(pwd) || pwd.Length < 8) return false;
+        bool upper = false, digit = false, special = false;
+        foreach (var c in pwd)
+        {
+            if (char.IsUpper(c)) upper = true;
+            else if (char.IsDigit(c)) digit = true;
+            else if (!char.IsLetterOrDigit(c)) special = true;
+        }
+        return upper && digit && special;
     }
 }

@@ -142,7 +142,7 @@ export function JobSeekerProfile() {
       <div className="bg-white rounded-xl shadow-lg p-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">My Profile</h1>
+          <h1 className="text-3xl font-bold text-gray-800">My Profile - job seeker</h1>
           <div className="flex gap-2">
             {!editing ? (
               <button

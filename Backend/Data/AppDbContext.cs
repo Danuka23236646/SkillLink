@@ -16,6 +16,13 @@ public class AppDbContext : DbContext
      public DbSet<JobPosting> JobPostings => Set<JobPosting>();//job post
 
 
+public DbSet<EmployerProfile> EmployerProfiles => Set<EmployerProfile>();
+public DbSet<EmployerFile>    EmployerFiles    => Set<EmployerFile>();
+
+public DbSet<Job> Jobs { get; set; }
+
+
+
     // ✅ Add Users
     public DbSet<User> Users => Set<User>();
 

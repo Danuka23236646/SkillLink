@@ -19,7 +19,12 @@ import { Sidebar } from './components/Layout/Sidebar'
 import { SavedJobs } from './pages/SavedJobs'
 import { Applications } from './pages/Applications'
 import { Settings } from './pages/Settings'
-import { tokenManager } from './api/auth'
+import { tokenManager } from './api/auth.js'
+import EmployerProfile from './pages/employer/EmployerProfile.jsx';
+import RoleRoute from "./pages/Auth/RoleRoute.jsx";
+import Forbidden from "./pages/Forbidden.jsx"; // if you added it
+import MyJobs from './pages/MyJobs.jsx'
+
 
 export default function App(){
   // Initialize authentication state from localStorage
@@ -33,48 +38,7 @@ export default function App(){
 
   // Shared savedJobs state that will be used across components
   const [savedJobs, setSavedJobs] = useState([
-    {
-      id: 1,
-      title: 'Senior Frontend Developer',
-      company: 'TechCorp Inc.',
-      location: 'San Francisco, CA',
-      type: 'Full-time',
-      salary: '$120,000 - $150,000',
-      posted: '2 days ago',
-      description:
-        'We are looking for an experienced Frontend Developer to join our team and help build amazing user experiences.',
-      logo: 'https://images.unsplash.com/photo-1549924231-f129b911e442?ixlib=rb-1.2.1&auto=format&fit=crop&w=50&h=50&q=80',
-      savedDate: '2023-11-01',
-      status: 'active',
-    },
-    {
-      id: 2,
-      title: 'UX/UI Designer',
-      company: 'Design Studio',
-      location: 'Remote',
-      type: 'Contract',
-      salary: '$80,000 - $100,000',
-      posted: '1 day ago',
-      description:
-        'Join our creative team to design intuitive and beautiful interfaces for our clients.',
-      logo: 'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?ixlib=rb-1.2.1&auto=format&fit=crop&w=50&h=50&q=80',
-      savedDate: '2023-11-03',
-      status: 'active',
-    },
-    {
-      id: 5,
-      title: 'DevOps Engineer',
-      company: 'CloudOps',
-      location: 'Remote',
-      type: 'Full-time',
-      salary: '$125,000 - $155,000',
-      posted: '1 week ago',
-      description:
-        'Join our team to build and maintain our cloud infrastructure and CI/CD pipelines.',
-      logo: 'https://images.unsplash.com/photo-1553835973-dec43bfddbeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=50&h=50&q=80',
-      savedDate: '2023-10-28',
-      status: 'expired',
-    },
+
   ])
 
   // Login function
@@ -116,15 +80,7 @@ export default function App(){
               }
             />
             <Route
-              path="/profile"
-              element={
-                user.isAuthenticated ? (
-                  <JobSeekerProfile />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
+              path="/profile"element={user.isAuthenticated ? (<JobSeekerProfile />) : (<Navigate to="/login" />)}/>
             <Route
               path="/jobs"
               element={
@@ -197,6 +153,25 @@ export default function App(){
                 user.isAuthenticated ? <Settings /> : <Navigate to="/login" />
               }
             />
+
+            <Route path="/employer" element={<EmployerProfile />} />
+
+            <Route
+          path="/my-jobs"
+          element={
+            user.isAuthenticated && (user.role === 'employer' || user.role === 'admin')
+      ? <MyJobs />
+      : <Navigate to="/login" />
+  }
+/>
+        
+       
+             {/* (Optional) forbidden page */}
+            <Route path="/forbidden" element={<Forbidden />} />
+
+         
+            
+            
           </Routes>
         </main>
       </div>
