@@ -1,48 +1,47 @@
 const API_BASE_URL = 'http://localhost:5041/api';
 
+async function handleResponse(response) {
+  const contentType = response.headers.get('content-type') || '';
+  const raw = await response.text(); // read once
+  let data = null;
+
+  // Try to parse JSON if it looks like JSON
+  if (raw) {
+    if (contentType.includes('application/json')) {
+      try { data = JSON.parse(raw); } catch { /* ignore parse error */ }
+    } else {
+      data = { message: raw }; // treat plain text as message
+    }
+  }
+
+  if (!response.ok) {
+    const msg =
+      (data && (data.message || data.error || data.title)) ||
+      `HTTP ${response.status} ${response.statusText}`;
+    throw new Error(msg);
+  }
+
+  // successful but empty body (e.g., 204)
+  return data ?? {};
+}
+
 export const authAPI = {
   async login(email, password) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      throw error;
-    }
+    const res = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    return handleResponse(res);
   },
 
   async register(fullName, email, password, role) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ fullName, email, password, role }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Registration failed');
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      throw error;
-    }
+    const res = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ fullName, email, password, role }),
+    });
+    return handleResponse(res);
   },
 };
 

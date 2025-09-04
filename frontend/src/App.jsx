@@ -24,6 +24,8 @@ import EmployerProfile from './pages/employer/EmployerProfile.jsx';
 import RoleRoute from "./pages/Auth/RoleRoute.jsx";
 import Forbidden from "./pages/Forbidden.jsx"; // if you added it
 import MyJobs from './pages/MyJobs.jsx'
+import { ViewJob } from './pages/ViewJob'
+import {EmployerDashboard} from './pages/EmployerDashboard.jsx'
 
 
 export default function App(){
@@ -169,7 +171,13 @@ export default function App(){
              {/* (Optional) forbidden page */}
             <Route path="/forbidden" element={<Forbidden />} />
 
-         
+          <Route path="/jobs" element={<JobListings />} />
+        <Route path="/view-job/:id" element={<ViewJob />} />   {/* NEW */}
+
+       
+  {/* other routes */}
+      <Route path="/EmployerDashboard" element={<EmployerDashboard />} />
+ 
             
             
           </Routes>

@@ -45,7 +45,7 @@ export function Sidebar({ userRole }) {
       {
         name: 'Dashboard',
         icon: <LayoutDashboardIcon size={18} />,
-        link: '/employer-dashboard',
+        link: '/EmployerDashboard',
       },
       {
         name: 'Post Job',
