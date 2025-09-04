@@ -42,4 +42,11 @@ public class JobPosting
 
     public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedUtc { get; set; }
+
+
+
+
+    // NEW → who owns this job
+    public int EmployerUserId { get; set; }
+    public User? EmployerUser { get; set; }
 }

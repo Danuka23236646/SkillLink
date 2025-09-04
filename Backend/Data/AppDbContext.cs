@@ -12,37 +12,47 @@ public class AppDbContext : DbContext
     public DbSet<Education>        Educations        => Set<Education>();
     public DbSet<UploadedFile>     UploadedFiles     => Set<UploadedFile>();
 
+    public DbSet<JobPosting> JobPostings => Set<JobPosting>();   // keep this
+    // REMOVE if you don't have a separate Job entity:
+    // public DbSet<Job> Jobs { get; set; }
 
-     public DbSet<JobPosting> JobPostings => Set<JobPosting>();//job post
+    public DbSet<EmployerProfile> EmployerProfiles => Set<EmployerProfile>();
+    public DbSet<EmployerFile>    EmployerFiles    => Set<EmployerFile>();
 
-
-public DbSet<EmployerProfile> EmployerProfiles => Set<EmployerProfile>();
-public DbSet<EmployerFile>    EmployerFiles    => Set<EmployerFile>();
-
-public DbSet<Job> Jobs { get; set; }
-
-
-
-    // ✅ Add Users
+    public DbSet<JobApplication> JobApplications => Set<JobApplication>();
     public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
         base.OnModelCreating(b);
 
+        // --- JobPosting ---
+        b.Entity<JobPosting>(e =>
+        {
+            e.HasIndex(j => j.CreatedUtc);
+            e.HasIndex(j => new { j.JobTitle, j.JobType });
 
 
-               // quick indices for search/sort//////////////////////////////////////////////////////job post
-                // --- JobPosting ---
-                    b.Entity<JobPosting>(e =>
-                    {
-                        e.HasIndex(j => j.CreatedUtc);
-                        e.HasIndex(j => new { j.JobTitle, j.JobType });
-                    });
+            // NEW: FK to Users table
+    e.HasOne(j => j.EmployerUser)
+     .WithMany()
+     .HasForeignKey(j => j.EmployerUserId)
+     .OnDelete(DeleteBehavior.Restrict);
+        });
 
+        // --- JobApplication (FIXED: use b, not modelBuilder) ---
+        b.Entity<JobApplication>(e =>
+        {
+            e.HasOne(a => a.Job)
+             .WithMany()                        // or .WithMany(j => j.Applications) if you add that collection on JobPosting
+             .HasForeignKey(a => a.JobId)
+             .OnDelete(DeleteBehavior.Cascade);
 
-
-                    
+            // optional: constrain lengths
+            e.Property(a => a.FullName).HasMaxLength(120);
+            e.Property(a => a.Email).HasMaxLength(160);
+            e.Property(a => a.Phone).HasMaxLength(40);
+        });
 
         // --- JobSeekerProfile ---
         b.Entity<JobSeekerProfile>(e =>
@@ -56,21 +66,16 @@ public DbSet<Job> Jobs { get; set; }
             e.Property(p => p.About).HasMaxLength(4000);
             e.Property(p => p.SkillsCsv).HasMaxLength(1000);
 
-            e.HasMany(p => p.Experience)
-             .WithOne(x => x.Profile)
-             .HasForeignKey(x => x.ProfileId)
-             .OnDelete(DeleteBehavior.Cascade);
+            e.HasMany(p => p.Experience).WithOne(x => x.Profile)
+             .HasForeignKey(x => x.ProfileId).OnDelete(DeleteBehavior.Cascade);
 
-            e.HasMany(p => p.Education)
-             .WithOne(x => x.Profile)
-             .HasForeignKey(x => x.ProfileId)
-             .OnDelete(DeleteBehavior.Cascade);
+            e.HasMany(p => p.Education).WithOne(x => x.Profile)
+             .HasForeignKey(x => x.ProfileId).OnDelete(DeleteBehavior.Cascade);
 
-            e.HasMany(p => p.Files)
-             .WithOne(x => x.Profile)
-             .HasForeignKey(x => x.ProfileId)
-             .OnDelete(DeleteBehavior.Cascade);
+            e.HasMany(p => p.Files).WithOne(x => x.Profile)
+             .HasForeignKey(x => x.ProfileId).OnDelete(DeleteBehavior.Cascade);
 
+            // For PostgreSQL this is fine; for SQL Server use GETUTCDATE()
             e.Property(p => p.CreatedUtc).HasDefaultValueSql("CURRENT_TIMESTAMP");
             e.Property(p => p.UpdatedUtc).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
@@ -82,7 +87,6 @@ public DbSet<Job> Jobs { get; set; }
             e.Property(p => p.Position).HasMaxLength(160);
             e.Property(p => p.DurationLabel).HasMaxLength(60);
             e.Property(p => p.Description).HasMaxLength(2000);
-
             e.Property(p => p.StartDate).HasColumnType("date");
             e.Property(p => p.EndDate).HasColumnType("date");
         });
@@ -93,7 +97,6 @@ public DbSet<Job> Jobs { get; set; }
             e.Property(p => p.Institution).HasMaxLength(200);
             e.Property(p => p.Degree).HasMaxLength(160);
             e.Property(p => p.DurationLabel).HasMaxLength(60);
-
             e.Property(p => p.StartDate).HasColumnType("date");
             e.Property(p => p.EndDate).HasColumnType("date");
         });
@@ -112,11 +115,10 @@ public DbSet<Job> Jobs { get; set; }
             e.Property(u => u.FullName).HasMaxLength(120);
             e.Property(u => u.Email).HasMaxLength(160);
             e.Property(u => u.Role).HasMaxLength(40);
-            e.HasIndex(u => u.Email).IsUnique(); // ✅ enforce unique email
+            e.HasIndex(u => u.Email).IsUnique();
         });
     }
 
-    // Auto-manage UpdatedUtc/CreatedUtc on profile changes
     public override int SaveChanges()
     {
         TouchProfileTimestamps();

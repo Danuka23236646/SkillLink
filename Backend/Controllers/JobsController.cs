@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Backend.Data;
 using Backend.DTOs;
 using Backend.Models;
@@ -12,6 +13,25 @@ public class JobsController : ControllerBase
 {
     private readonly AppDbContext _db;
     public JobsController(AppDbContext db) { _db = db; }
+
+    // Helper: read employer user id (claims → query → header)
+    private int GetEmployerUserIdOrFallback()
+    {
+        // 1) Try auth claims
+        var v = User.FindFirstValue("uid") ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (int.TryParse(v, out var idFromClaims)) return idFromClaims;
+
+        // 2) Try query string (?employerUserId=1)
+        if (int.TryParse(HttpContext.Request.Query["employerUserId"], out var idFromQuery))
+            return idFromQuery;
+
+        // 3) Try dev header (X-Debug-UserId: 1)
+        var hdr = HttpContext.Request.Headers["X-Debug-UserId"].FirstOrDefault();
+        if (int.TryParse(hdr, out var idFromHeader)) return idFromHeader;
+
+        // 4) Nothing found
+        throw new InvalidOperationException("Employer user id not found in claims, query, or header.");
+    }
 
     // GET /api/jobs?search=react&page=1&pageSize=10&jobType=full-time
     [HttpGet]
@@ -61,7 +81,7 @@ public class JobsController : ControllerBase
                 Description = j.Description,
                 CompanyName = j.CompanyName,
                 CompanyWebsite = j.CompanyWebsite,
-                CompanyLogoUrl = j.CompanyLogoUrl,     // 👈 needed for logo in UI
+                CompanyLogoUrl = j.CompanyLogoUrl,
                 CompanyDescription = j.CompanyDescription,
                 CreatedUtc = j.CreatedUtc,
                 UpdatedUtc = j.UpdatedUtc
@@ -90,6 +110,8 @@ public class JobsController : ControllerBase
             return ValidationProblem(ModelState);
         }
 
+        var employerUserId = GetEmployerUserIdOrFallback(); // 👈 safe fallback
+
         var job = new JobPosting
         {
             JobTitle = dto.JobTitle.Trim(),
@@ -103,7 +125,8 @@ public class JobsController : ControllerBase
             CompanyName = dto.CompanyName.Trim(),
             CompanyWebsite = dto.CompanyWebsite?.Trim(),
             CompanyLogoUrl = dto.CompanyLogoUrl?.Trim(),
-            CompanyDescription = dto.CompanyDescription
+            CompanyDescription = dto.CompanyDescription,
+            EmployerUserId = employerUserId
         };
 
         _db.JobPostings.Add(job);

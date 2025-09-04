@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom';
 import { getJobs } from '../api/jobs'
 import {
   Search, MapPin, Briefcase, Clock, Filter, ChevronDown,
@@ -282,11 +283,13 @@ export function JobListings({ savedJobs, setSavedJobs }) {
                       </div>
                     </div>
 
-                    <div className="mt-4">
-                      <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                        View Details
-                      </button>
-                    </div>
+                    <Link
+  to={`/view-job/${job.id}`}
+  state={{ preload: job }}  // optional: pass what you already have to avoid flash
+  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+>
+  View Details
+</Link>
                   </div>
                 ))}
 
