@@ -27,7 +27,52 @@ public class ProfilesController : ControllerBase
         return Ok(list);
     }
 
-
+    // GET: api/profiles/jobseekers
+    [HttpGet("jobseekers")]
+    public async Task<IActionResult> GetAllJobSeekers()
+    {
+        var profiles = await _db.JobSeekerProfiles
+            .Where(p => p.IsPublic)
+            .Include(p => p.Experience)
+            .Include(p => p.Education)
+            .Include(p => p.Files)
+            .Select(p => new ProfileDto(
+                p.Id,
+                p.UserId.HasValue ? p.UserId.Value : 0,
+                p.ProfileImageUrl,
+                p.FullName,
+                p.JobTitle,
+                p.Email,
+                p.Phone,
+                p.Location,
+                p.About,
+                p.IsPublic,
+                p.SkillsCsv != null ? p.SkillsCsv.Split(',', StringSplitOptions.RemoveEmptyEntries) : Array.Empty<string>(),
+                p.Experience.Select(e => new ExperienceDto(
+                    e.Company,
+                    e.Position,
+                    e.DurationLabel,
+                    e.Description,
+                    e.StartDate != null ? e.StartDate.Value.ToString("yyyy-MM-dd") : null,
+                    e.EndDate != null ? e.EndDate.Value.ToString("yyyy-MM-dd") : null
+                )).ToList(),
+                p.Education.Select(ed => new EducationDto(
+                    ed.Institution,
+                    ed.Degree,
+                    ed.DurationLabel,
+                    ed.StartDate != null ? ed.StartDate.Value.ToString("yyyy-MM-dd") : null,
+                    ed.EndDate != null ? ed.EndDate.Value.ToString("yyyy-MM-dd") : null
+                )).ToList(),
+                p.Files.Select(f => new FileDto(
+                    f.FileName,
+                    f.ContentType,
+                    f.SizeBytes,
+                    f.Url
+                )).ToList()
+            ))
+            .ToListAsync();
+        return Ok(profiles);
+    }
 
     // GET: api/profiles/user/{userId}
     [HttpGet("user/{userId:int}")]

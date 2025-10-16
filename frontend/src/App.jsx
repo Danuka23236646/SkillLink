@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 // The App component's contents are currently a placeholder — please update this file first for a new design / component!
 import {
-  BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -10,9 +9,9 @@ import { Navbar } from './components/Layout/Navbar'
 import { Footer } from './components/Layout/Footer'
 import { JobSeekerProfile } from './pages/JobSeekerProfile'
 import { JobListings } from './pages/JobListings'
-import { JobPosting } from './pages/JobPosting'
-import { TalentSearch } from './pages/TalentSearch'
-import { AdminDashboard } from './pages/AdminDashboard'
+import { JobPosting } from './pages/employer/JobPosting'
+import { TalentSearch } from './pages/employer/TalentSearch'
+import { AdminDashboard } from './pages/employer/AdminDashboard.jsx'
 import { Login } from './pages/Auth/Login'
 import { Signup } from './pages/Auth/Signup'
 import { Sidebar } from './components/Layout/Sidebar'
@@ -20,12 +19,12 @@ import { SavedJobs } from './pages/SavedJobs'
 import { Applications } from './pages/Applications'
 import { Settings } from './pages/Settings'
 import { tokenManager } from './api/auth.js'
-import EmployerProfile from './pages/employer/EmployerProfile.jsx';
-import RoleRoute from "./pages/Auth/RoleRoute.jsx";
-import Forbidden from "./pages/Forbidden.jsx"; // if you added it
-import MyJobs from './pages/MyJobs.jsx'
+import EmployerProfile from './pages/employer/EmployerProfile';
+import RoleRoute from "./pages/Auth/RoleRoute";
+import Forbidden from "./pages/Forbidden"; // if you added it
+import MyJobs from './pages/MyJobs'
 import { ViewJob } from './pages/ViewJob'
-import {EmployerDashboard} from './pages/EmployerDashboard.jsx'
+import {EmployerDashboard} from './pages/employer/EmployerDashboard'
 
 
 export default function App(){
@@ -66,12 +65,12 @@ export default function App(){
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
-      <Navbar user={user} onLogout={handleLogout} />
-      <div className="flex flex-1">
-        {user.isAuthenticated && <Sidebar userRole={user.role} />}
-        <main className="flex-1 p-4">
-          <Routes>
+      <div className="flex flex-col min-h-screen bg-gray-50">
+        <Navbar user={user} onLogout={handleLogout} />
+        <div className="flex flex-1">
+          {user.isAuthenticated && <Sidebar userRole={user.role} />}
+          <main className="flex-1 p-4">
+            <Routes>
             <Route
               path="/"
               element={
@@ -82,7 +81,9 @@ export default function App(){
               }
             />
             <Route
-              path="/profile"element={user.isAuthenticated ? (<JobSeekerProfile />) : (<Navigate to="/login" />)}/>
+              path="/profile"
+              element={user.isAuthenticated ? (<JobSeekerProfile />) : (<Navigate to="/login" />)}
+            />
             <Route
               path="/jobs"
               element={
@@ -180,13 +181,11 @@ export default function App(){
  
             
             
-          </Routes>
-        </main>
+            </Routes>
+          </main>
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
-
-    
   )
   
 }

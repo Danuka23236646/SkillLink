@@ -36,7 +36,7 @@ export function AdminDashboard() {
                   </dt>
                   <dd>
                     <div className="text-lg font-medium text-gray-900">
-                      2,453
+                      9
                     </div>
                   </dd>
                 </dl>
@@ -66,7 +66,7 @@ export function AdminDashboard() {
                     Active Jobs
                   </dt>
                   <dd>
-                    <div className="text-lg font-medium text-gray-900">567</div>
+                    <div className="text-lg font-medium text-gray-900">6</div>
                   </dd>
                 </dl>
               </div>
@@ -95,7 +95,7 @@ export function AdminDashboard() {
                     Pending Verification
                   </dt>
                   <dd>
-                    <div className="text-lg font-medium text-gray-900">23</div>
+                    <div className="text-lg font-medium text-gray-900">3</div>
                   </dd>
                 </dl>
               </div>
@@ -112,35 +112,7 @@ export function AdminDashboard() {
             </div>
           </div>
         </div>
-        <div className="bg-white overflow-hidden shadow-sm rounded-lg">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 bg-red-500 rounded-md p-3">
-                <XCircle className="h-6 w-6 text-white" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Reported Content
-                  </dt>
-                  <dd>
-                    <div className="text-lg font-medium text-gray-900">7</div>
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-          <div className="bg-gray-50 px-5 py-3">
-            <div className="text-sm">
-              <a
-                href="#"
-                className="font-medium text-blue-600 hover:text-blue-500"
-              >
-                View all
-              </a>
-            </div>
-          </div>
-        </div>
+       
       </div>
       <div className="mt-8">
         <div className="bg-white shadow-sm rounded-lg">

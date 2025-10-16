@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { PlusIcon } from 'lucide-react'
-import { createJob, uploadLogo } from '../api/jobs'
+import { createJob, uploadLogo } from '../../api/jobs'
 
 export function JobPosting() {
   const [submitting, setSubmitting] = useState(false)

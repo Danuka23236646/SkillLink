@@ -4,7 +4,14 @@ const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:5041";
 export async function uploadAvatar(file) {
   const fd = new FormData();
   fd.append("file", file);
-  const res = await fetch(`${API_BASE}/api/files/avatar`, {
+  const uploadUrl = `${API_BASE}/api/files/avatar`;
+  
+  // Debug logging
+  console.log("API_BASE:", API_BASE);
+  console.log("Upload URL:", uploadUrl);
+  console.log("VITE_API_BASE env var:", import.meta.env.VITE_API_BASE);
+  
+  const res = await fetch(uploadUrl, {
     method: "POST",
     body: fd,
   });

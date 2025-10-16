@@ -8,6 +8,8 @@ import {
   DollarSignIcon,
   AlertCircleIcon,
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
+
 export function SavedJobs({ savedJobs, setSavedJobs }) {
   // Filter states
   const [statusFilter, setStatusFilter] = useState('all')
@@ -123,10 +125,13 @@ export function SavedJobs({ savedJobs, setSavedJobs }) {
                     Saved on {new Date(job.savedDate).toLocaleDateString()}
                   </div>
                   <div className="flex space-x-3">
-                    <button className="text-gray-600 hover:text-gray-800 text-sm font-medium flex items-center">
-                      <ExternalLinkIcon className="h-4 w-4 mr-1" />
+                  
+                    <Link
+                      to={`/view-job/${job.id}`}
+                      className="text-blue-600 hover:text-blue-800 text-sm"
+                    >
                       View Details
-                    </button>
+                    </Link>
                     <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md text-sm font-medium">
                       Apply Now
                     </button>

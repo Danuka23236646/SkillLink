@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import {
   getMyEmployerApplications,
   getApplicationById as fetchApplicationById,
-} from '../api/jobs';
+} from '../../api/jobs';
 
 export default function EmployerApplications({ companyName, jobId }) {
   const [apps, setApps] = useState([]);

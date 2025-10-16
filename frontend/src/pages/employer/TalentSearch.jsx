@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Search,
   MapPin,
@@ -19,100 +19,14 @@ export function TalentSearch() {
   const [experienceLevel, setExperienceLevel] = useState('')
   const [availability, setAvailability] = useState('')
   const [skills, setSkills] = useState([])
-  // Mock candidate data
-  const candidates = [
-    {
-      id: 1,
-      name: 'Alex Johnson',
-      title: 'Senior Frontend Developer',
-      location: 'San Francisco, CA',
-      experience: '5+ years',
-      skills: [
-        'React',
-        'JavaScript',
-        'TypeScript',
-        'HTML',
-        'CSS',
-        'UI/UX Design',
-      ],
-      availability: 'Immediately',
-      photo:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    {
-      id: 2,
-      name: 'Sarah Williams',
-      title: 'UX/UI Designer',
-      location: 'Remote',
-      experience: '4 years',
-      skills: [
-        'Figma',
-        'Adobe XD',
-        'UI Design',
-        'User Research',
-        'Prototyping',
-      ],
-      availability: '2 weeks',
-      photo:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    {
-      id: 3,
-      name: 'Michael Chen',
-      title: 'Backend Developer',
-      location: 'New York, NY',
-      experience: '7 years',
-      skills: ['Node.js', 'Python', 'MongoDB', 'Express', 'API Design'],
-      availability: '1 month',
-      photo:
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    {
-      id: 4,
-      name: 'Jessica Rodriguez',
-      title: 'Product Manager',
-      location: 'Austin, TX',
-      experience: '6 years',
-      skills: [
-        'Product Strategy',
-        'Agile',
-        'User Stories',
-        'Roadmapping',
-        'Analytics',
-      ],
-      availability: 'Immediately',
-      photo:
-        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    {
-      id: 5,
-      name: 'David Kim',
-      title: 'DevOps Engineer',
-      location: 'Remote',
-      experience: '3 years',
-      skills: [
-        'AWS',
-        'Docker',
-        'Kubernetes',
-        'CI/CD',
-        'Infrastructure as Code',
-      ],
-      availability: '2 weeks',
-      photo:
-        'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    {
-      id: 6,
-      name: 'Emily Davis',
-      title: 'Mobile Developer (iOS)',
-      location: 'Seattle, WA',
-      experience: '4 years',
-      skills: ['Swift', 'iOS', 'Objective-C', 'Mobile Design', 'App Store'],
-      availability: '1 month',
-      photo:
-        'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-  ]
+  // Candidate data state
+  const [candidates, setCandidates] = useState([])
+  useEffect(() => {
+    fetch('http://localhost:5041/api/profiles/jobseekers')
+      .then((res) => res.json())
+      .then(setCandidates)
+      .catch(() => setCandidates([]))
+  }, [])
   const toggleSaveCandidate = (candidateId) => {
     if (savedCandidates.includes(candidateId)) {
       setSavedCandidates(savedCandidates.filter((id) => id !== candidateId))
@@ -308,85 +222,123 @@ export function TalentSearch() {
               </div>
             </div>
             <div className="divide-y divide-gray-200">
-              {candidates.map((candidate) => (
-                <div key={candidate.id} className="p-6 hover:bg-gray-50">
-                  <div className="flex justify-between">
-                    <div className="flex">
-                      <div className="h-16 w-16 rounded-full overflow-hidden flex-shrink-0">
-                        <img
-                          src={candidate.photo}
-                          alt={candidate.name}
-                          className="h-full w-full object-cover"
-                        />
+              {console.log('Candidates:', candidates)}
+              {candidates[0] && console.log('First candidate:', candidates[0])}
+                  {candidates
+                    .map((candidate, idx) => {
+                    const id = candidate.id ?? idx;
+                    const fullName = candidate.fullName ?? candidate.FullName;
+                    const jobTitle = candidate.jobTitle ?? candidate.JobTitle;
+                    const location = candidate.location ?? candidate.Location;
+                    const profileImageUrl = candidate.profileImageUrl ?? candidate.ProfileImageUrl;
+                    const about = candidate.about ?? candidate.About;
+                    const skills = candidate.skills ?? candidate.Skills ?? [];
+                    const email = candidate.email ?? candidate.Email;
+                    const phone = candidate.phone ?? candidate.Phone;
+                    const experience = candidate.experience ?? candidate.Experience ?? [];
+                    const education = candidate.education ?? candidate.Education ?? [];
+                  return (
+                    <div key={id} className="p-6 hover:bg-gray-50">
+                      <div className="flex justify-between">
+                        <div className="flex">
+                          <div className="h-16 w-16 rounded-full overflow-hidden flex-shrink-0">
+                            <img
+                              src={profileImageUrl}
+                              alt={fullName}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div className="ml-4">
+                            <h3 className="text-lg font-medium text-gray-900">
+                              {fullName}
+                            </h3>
+                            <div className="text-sm text-gray-500">
+                              {jobTitle}
+                            </div>
+                            <div className="mt-1 flex items-center text-sm text-gray-500">
+                              <MapPin className="h-4 w-4 mr-1" />
+                              {location}
+                            </div>
+                              <div className="mt-1 text-sm text-gray-500">
+                                <span>Email: {email}</span>
+                                {phone && <span className="ml-2">Phone: {phone}</span>}
+                              </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => toggleSaveCandidate(id)}
+                          className={`h-8 w-8 flex items-center justify-center rounded-full ${savedCandidates.includes(id) ? 'text-blue-600 bg-blue-50' : 'text-gray-400 hover:text-gray-500 bg-white'}`}
+                        >
+                          <BookmarkIcon
+                            className="h-5 w-5"
+                            fill={
+                              savedCandidates.includes(id)
+                                ? 'currentColor'
+                                : 'none'
+                            }
+                          />
+                        </button>
                       </div>
-                      <div className="ml-4">
-                        <h3 className="text-lg font-medium text-gray-900">
-                          {candidate.name}
-                        </h3>
-                        <div className="text-sm text-gray-500">
-                          {candidate.title}
+                      <div className="mt-4">
+                        <div className="flex items-center text-sm text-gray-500">
+                          <BriefcaseIcon className="h-4 w-4 mr-1" />
+                          <span style={{wordBreak: 'break-word', whiteSpace: 'pre-line'}}>{about}</span>
                         </div>
-                        <div className="mt-1 flex items-center text-sm text-gray-500">
-                          <MapPin className="h-4 w-4 mr-1" />
-                          {candidate.location}
-                        </div>
+                          {experience.length > 0 && (
+                            <div className="mt-2 text-xs text-gray-600">
+                              <strong>Experience:</strong>
+                              <ul className="list-disc ml-4">
+                                {experience.map((exp, i) => (
+                                  <li key={i}>{exp.Position || exp.position} at {exp.Company || exp.company} ({exp.Duration || exp.duration})</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {education.length > 0 && (
+                            <div className="mt-2 text-xs text-gray-600">
+                              <strong>Education:</strong>
+                              <ul className="list-disc ml-4">
+                                {education.map((edu, i) => (
+                                  <li key={i}>{edu.Degree || edu.degree} at {edu.Institution || edu.institution} ({edu.Duration || edu.duration})</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {(skills.length > 0 ? skills.slice(0, 4) : ['No Skills']).map((skill, i) => (
+                          <span
+                            key={skill + i}
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                        {skills.length > 4 && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            +{skills.length - 4} more
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-4 flex space-x-2">
+                        <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                          <UserIcon className="h-4 w-4 mr-1" />
+                          View Profile
+                        </button>
+                        <button className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                          <MessageSquareIcon className="h-4 w-4 mr-1" />
+                          Contact
+                        </button>
+                        <button className="inline-flex items-center px-2 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                          <PhoneIcon className="h-4 w-4" />
+                        </button>
+                        <button className="inline-flex items-center px-2 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                          <MailIcon className="h-4 w-4" />
+                        </button>
                       </div>
                     </div>
-                    <button
-                      onClick={() => toggleSaveCandidate(candidate.id)}
-                      className={`h-8 w-8 flex items-center justify-center rounded-full ${savedCandidates.includes(candidate.id) ? 'text-blue-600 bg-blue-50' : 'text-gray-400 hover:text-gray-500 bg-white'}`}
-                    >
-                      <BookmarkIcon
-                        className="h-5 w-5"
-                        fill={
-                          savedCandidates.includes(candidate.id)
-                            ? 'currentColor'
-                            : 'none'
-                        }
-                      />
-                    </button>
-                  </div>
-                  <div className="mt-4">
-                    <div className="flex items-center text-sm text-gray-500">
-                      <BriefcaseIcon className="h-4 w-4 mr-1" />
-                      <span>{candidate.experience} experience</span>
-                      <span className="mx-2">&middot;</span>
-                      <span>Available {candidate.availability}</span>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {candidate.skills.slice(0, 4).map((skill) => (
-                      <span
-                        key={skill}
-                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                    {candidate.skills.length > 4 && (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                        +{candidate.skills.length - 4} more
-                      </span>
-                    )}
-                  </div>
-                  <div className="mt-4 flex space-x-2">
-                    <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                      <UserIcon className="h-4 w-4 mr-1" />
-                      View Profile
-                    </button>
-                    <button className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                      <MessageSquareIcon className="h-4 w-4 mr-1" />
-                      Contact
-                    </button>
-                    <button className="inline-flex items-center px-2 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                      <PhoneIcon className="h-4 w-4" />
-                    </button>
-                    <button className="inline-flex items-center px-2 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                      <MailIcon className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                  );
+                })}
             </div>
             <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between">
               <div className="text-sm text-gray-500">
