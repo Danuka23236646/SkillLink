@@ -11,6 +11,7 @@ import { JobSeekerProfile } from './pages/JobSeekerProfile'
 import { JobListings } from './pages/JobListings'
 import { JobPosting } from './pages/employer/JobPosting'
 import { TalentSearch } from './pages/employer/TalentSearch'
+import CandidateProfile from './pages/employer/CandidateProfile'
 import { AdminDashboard } from './pages/employer/AdminDashboard.jsx'
 import { Login } from './pages/Auth/Login'
 import { Signup } from './pages/Auth/Signup'
@@ -115,6 +116,7 @@ export default function App(){
                 )
               }
             />
+            <Route path="/candidate/:id" element={<CandidateProfile />} />
             <Route
               path="/admin"
               element={

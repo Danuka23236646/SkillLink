@@ -74,26 +74,10 @@ export function Sidebar({ userRole }) {
         icon: <LayoutDashboardIcon size={18} />,
         link: '/admin',
       },
-      {
-        name: 'User Management',
-        icon: <UsersIcon size={18} />,
-        link: '/admin/users',
-      },
-      {
-        name: 'Verification Queue',
-        icon: <ShieldIcon size={18} />,
-        link: '/admin/verification',
-      },
-      {
-        name: 'Analytics',
-        icon: <LineChartIcon size={18} />,
-        link: '/admin/analytics',
-      },
-      {
-        name: 'Settings',
-        icon: <SettingsIcon size={18} />,
-        link: '/admin/settings',
-      },
+   
+    
+     
+   ,
     ],
   }
   const items = menuItems[userRole] || []

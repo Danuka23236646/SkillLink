@@ -61,7 +61,25 @@ namespace Backend.Controllers
             var a = await _db.JobApplications
                              .Include(x => x.Job)
                              .FirstOrDefaultAsync(x => x.Id == id);
-            return a is null ? NotFound() : Ok(a);
+            if (a is null) return NotFound();
+
+            // Try to find a matching JobSeekerProfile by email so frontend can link to the profile page
+            var profile = await _db.JobSeekerProfiles.FirstOrDefaultAsync(p => p.Email.ToLower() == a.Email.ToLower());
+            var result = new
+            {
+                id = a.Id,
+                jobId = a.JobId,
+                job = a.Job,
+                fullName = a.FullName,
+                email = a.Email,
+                phone = a.Phone,
+                address = a.Address,
+                coverLetter = a.CoverLetter,
+                appliedDateUtc = a.AppliedDateUtc,
+                status = a.Status,
+                applicantProfileId = profile?.Id
+            };
+            return Ok(result);
         }
 
         // Generic list with optional filters (email, companyName, jobId, employerUserId)

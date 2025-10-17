@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Search,
   MapPin,
@@ -11,6 +12,7 @@ import {
   BriefcaseIcon,
 } from 'lucide-react'
 export function TalentSearch() {
+  const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
   const [location, setLocation] = useState('')
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -224,121 +226,114 @@ export function TalentSearch() {
             <div className="divide-y divide-gray-200">
               {console.log('Candidates:', candidates)}
               {candidates[0] && console.log('First candidate:', candidates[0])}
-                  {candidates
-                    .map((candidate, idx) => {
-                    const id = candidate.id ?? idx;
-                    const fullName = candidate.fullName ?? candidate.FullName;
-                    const jobTitle = candidate.jobTitle ?? candidate.JobTitle;
-                    const location = candidate.location ?? candidate.Location;
-                    const profileImageUrl = candidate.profileImageUrl ?? candidate.ProfileImageUrl;
-                    const about = candidate.about ?? candidate.About;
-                    const skills = candidate.skills ?? candidate.Skills ?? [];
-                    const email = candidate.email ?? candidate.Email;
-                    const phone = candidate.phone ?? candidate.Phone;
-                    const experience = candidate.experience ?? candidate.Experience ?? [];
-                    const education = candidate.education ?? candidate.Education ?? [];
-                  return (
-                    <div key={id} className="p-6 hover:bg-gray-50">
-                      <div className="flex justify-between">
-                        <div className="flex">
-                          <div className="h-16 w-16 rounded-full overflow-hidden flex-shrink-0">
-                            <img
-                              src={profileImageUrl}
-                              alt={fullName}
-                              className="h-full w-full object-cover"
-                            />
+              {candidates.map((candidate, idx) => {
+                const id = candidate.id ?? candidate.Id ?? idx;
+                const fullName = candidate.fullName ?? candidate.FullName ?? candidate.name ?? candidate.Name ?? 'No Name';
+                const jobTitle = candidate.jobTitle ?? candidate.JobTitle ?? candidate.title ?? candidate.Title ?? '';
+                const location = candidate.location ?? candidate.Location ?? '';
+                const profileImageUrl = candidate.profileImageUrl ?? candidate.ProfileImageUrl ?? candidate.profileUrl ?? candidate.ProfileUrl ?? '/uploads/avatars/default.png';
+                const about = candidate.about ?? candidate.About ?? candidate.summary ?? candidate.Summary ?? 'No description provided';
+                // Skills can come as array or comma-separated string
+                let skills = [];
+                if (Array.isArray(candidate.skills)) skills = candidate.skills;
+                else if (Array.isArray(candidate.Skills)) skills = candidate.Skills;
+                else if (typeof candidate.skills === 'string' && candidate.skills.length) skills = candidate.skills.split(',').map(s => s.trim()).filter(Boolean);
+                else if (typeof candidate.Skills === 'string' && candidate.Skills.length) skills = candidate.Skills.split(',').map(s => s.trim()).filter(Boolean);
+                else if (candidate.SkillsCsv && typeof candidate.SkillsCsv === 'string') skills = candidate.SkillsCsv.split(',').map(s => s.trim()).filter(Boolean);
+                const email = candidate.email ?? candidate.Email ?? '';
+                const phone = candidate.phone ?? candidate.Phone ?? '';
+                const experience = candidate.experience ?? candidate.Experience ?? [];
+                const education = candidate.education ?? candidate.Education ?? [];
+
+                return (
+                  <div key={id} className="p-6 hover:bg-gray-50">
+                    <div className="flex justify-between">
+                      <div className="flex">
+                        <div className="h-16 w-16 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
+                          <img
+                            src={profileImageUrl}
+                            alt={fullName}
+                            onError={(e) => { e.target.onerror = null; e.target.src = '/uploads/avatars/default.png'; }}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div className="ml-4">
+                          <h3 className="text-lg font-medium text-gray-900">{fullName}</h3>
+                          <div className="text-sm text-gray-500">{jobTitle}</div>
+                          <div className="mt-1 flex items-center text-sm text-gray-500">
+                            <MapPin className="h-4 w-4 mr-1" />
+                            <span>{location || 'Location not specified'}</span>
                           </div>
-                          <div className="ml-4">
-                            <h3 className="text-lg font-medium text-gray-900">
-                              {fullName}
-                            </h3>
-                            <div className="text-sm text-gray-500">
-                              {jobTitle}
-                            </div>
-                            <div className="mt-1 flex items-center text-sm text-gray-500">
-                              <MapPin className="h-4 w-4 mr-1" />
-                              {location}
-                            </div>
-                              <div className="mt-1 text-sm text-gray-500">
-                                <span>Email: {email}</span>
-                                {phone && <span className="ml-2">Phone: {phone}</span>}
-                              </div>
+                          <div className="mt-1 text-sm text-gray-500">
+                            {email ? (
+                              <a href={`mailto:${email}`} className="hover:underline">{email}</a>
+                            ) : (
+                              <span className="text-gray-400">Email not provided</span>
+                            )}
+                            {phone ? (
+                              <a href={`tel:${phone}`} className="ml-3 hover:underline">{phone}</a>
+                            ) : (
+                              <span className="ml-3 text-gray-400">Phone not provided</span>
+                            )}
                           </div>
                         </div>
+                      </div>
+                      <div className="flex items-start space-x-2">
                         <button
                           onClick={() => toggleSaveCandidate(id)}
                           className={`h-8 w-8 flex items-center justify-center rounded-full ${savedCandidates.includes(id) ? 'text-blue-600 bg-blue-50' : 'text-gray-400 hover:text-gray-500 bg-white'}`}
                         >
-                          <BookmarkIcon
-                            className="h-5 w-5"
-                            fill={
-                              savedCandidates.includes(id)
-                                ? 'currentColor'
-                                : 'none'
-                            }
-                          />
-                        </button>
-                      </div>
-                      <div className="mt-4">
-                        <div className="flex items-center text-sm text-gray-500">
-                          <BriefcaseIcon className="h-4 w-4 mr-1" />
-                          <span style={{wordBreak: 'break-word', whiteSpace: 'pre-line'}}>{about}</span>
-                        </div>
-                          {experience.length > 0 && (
-                            <div className="mt-2 text-xs text-gray-600">
-                              <strong>Experience:</strong>
-                              <ul className="list-disc ml-4">
-                                {experience.map((exp, i) => (
-                                  <li key={i}>{exp.Position || exp.position} at {exp.Company || exp.company} ({exp.Duration || exp.duration})</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                          {education.length > 0 && (
-                            <div className="mt-2 text-xs text-gray-600">
-                              <strong>Education:</strong>
-                              <ul className="list-disc ml-4">
-                                {education.map((edu, i) => (
-                                  <li key={i}>{edu.Degree || edu.degree} at {edu.Institution || edu.institution} ({edu.Duration || edu.duration})</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                      </div>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {(skills.length > 0 ? skills.slice(0, 4) : ['No Skills']).map((skill, i) => (
-                          <span
-                            key={skill + i}
-                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                        {skills.length > 4 && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                            +{skills.length - 4} more
-                          </span>
-                        )}
-                      </div>
-                      <div className="mt-4 flex space-x-2">
-                        <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                          <UserIcon className="h-4 w-4 mr-1" />
-                          View Profile
-                        </button>
-                        <button className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                          <MessageSquareIcon className="h-4 w-4 mr-1" />
-                          Contact
-                        </button>
-                        <button className="inline-flex items-center px-2 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                          <PhoneIcon className="h-4 w-4" />
-                        </button>
-                        <button className="inline-flex items-center px-2 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                          <MailIcon className="h-4 w-4" />
+                          <BookmarkIcon className="h-5 w-5" fill={savedCandidates.includes(id) ? 'currentColor' : 'none'} />
                         </button>
                       </div>
                     </div>
-                  );
-                })}
+                      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <div className="flex items-center text-sm text-gray-500">
+                            <BriefcaseIcon className="h-4 w-4 mr-1" />
+                            <span style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}>{about}</span>
+                          </div>
+                          <div className="mt-3">
+                            <h4 className="text-sm font-medium text-gray-900">Contact</h4>
+                            <div className="mt-1 text-sm text-gray-500">
+                              {email ? (
+                                <div><strong>Email:</strong> <a href={`mailto:${email}`} className="hover:underline">{email}</a></div>
+                              ) : (
+                                <div><strong>Email:</strong> <span className="text-gray-400">Not provided</span></div>
+                              )}
+                              {phone ? (
+                                <div className="mt-1"><strong>Phone:</strong> <a href={`tel:${phone}`} className="hover:underline">{phone}</a></div>
+                              ) : (
+                                <div className="mt-1"><strong>Phone:</strong> <span className="text-gray-400">Not provided</span></div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          {/* Right column reserved for future info (kept empty intentionally) */}
+                        </div>
+                      </div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {(skills && skills.length > 0 ? skills.slice(0, 4) : ['No Skills']).map((skill, i) => (
+                        <span key={skill + i} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{skill}</span>
+                      ))}
+                      {skills && skills.length > 4 && (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">+{skills.length - 4} more</span>
+                      )}
+                    </div>
+                    <div className="mt-4 flex space-x-2">
+                      <button onClick={() => navigate(`/candidate/${id}`)} className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <UserIcon className="h-4 w-4 mr-1" />
+                        View Profile
+                      </button>
+                      
+                      <button className="inline-flex items-center px-2 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <MailIcon className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between">
               <div className="text-sm text-gray-500">

@@ -1,7 +1,7 @@
 // EmployerApplications.jsx
 import React, { useEffect, useState } from 'react';
 import { MapPin, Clock, User2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import {
   getMyEmployerApplications,
@@ -9,6 +9,7 @@ import {
 } from '../../api/jobs';
 
 export default function EmployerApplications({ companyName, jobId }) {
+  const navigate = useNavigate();
   const [apps, setApps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -145,11 +146,16 @@ export default function EmployerApplications({ companyName, jobId }) {
               </div>
             )}
 
-            <div className="mt-6 flex justify-end">
-              <button onClick={() => setOpenId(null)} className="px-4 py-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50">
-                Close
-              </button>
-            </div>
+                <div className="mt-6 flex justify-end items-center space-x-3">
+                  {detail?.applicantProfileId && (
+                    <button onClick={() => navigate(`/candidate/${detail.applicantProfileId}`)} className="px-3 py-1.5 text-sm rounded-md border border-gray-300 hover:bg-gray-50">
+                      View Candidate Profile
+                    </button>
+                  )}
+                  <button onClick={() => setOpenId(null)} className="px-4 py-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50">
+                    Close
+                  </button>
+                </div>
           </div>
         </div>
       )}

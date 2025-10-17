@@ -76,7 +76,7 @@ public class ProfilesController : ControllerBase
 
     // GET: api/profiles/user/{userId}
     [HttpGet("user/{userId:int}")]
-    public async Task<ActionResult<JobSeekerProfile>> GetByUserId(int userId)
+    public async Task<ActionResult<ProfileDto>> GetByUserId(int userId)
     {
         var profile = await _db.JobSeekerProfiles
             .Include(x => x.Experience)
@@ -84,13 +84,13 @@ public class ProfilesController : ControllerBase
             .Include(x => x.Files)
             .FirstOrDefaultAsync(x => x.UserId == userId);
 
-        return profile is null ? NotFound() : Ok(profile);
+        return profile is null ? NotFound() : Ok(MapToDto(profile));
     }
 
 
     // GET: api/profiles/5
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<JobSeekerProfile>> GetOne(int id)
+    public async Task<ActionResult<ProfileDto>> GetOne(int id)
     {
         var p = await _db.JobSeekerProfiles
             .Include(x => x.Experience)
@@ -98,7 +98,7 @@ public class ProfilesController : ControllerBase
             .Include(x => x.Files)
             .FirstOrDefaultAsync(x => x.Id == id);
 
-        return p is null ? NotFound() : Ok(p);
+        return p is null ? NotFound() : Ok(MapToDto(p));
     }
 
     // POST: api/profiles
@@ -227,6 +227,27 @@ public async Task<ActionResult<JobSeekerProfile>> Update(int id, [FromBody] Prof
         }
         value = default;
         return false;
+    }
+
+    // Convert entity -> DTO for API responses
+    private static ProfileDto MapToDto(JobSeekerProfile p)
+    {
+        return new ProfileDto(
+            p.Id,
+            p.UserId ?? 0,
+            p.ProfileImageUrl,
+            p.FullName,
+            p.JobTitle,
+            p.Email,
+            p.Phone,
+            p.Location,
+            p.About,
+            p.IsPublic,
+            !string.IsNullOrWhiteSpace(p.SkillsCsv) ? p.SkillsCsv.Split(',', StringSplitOptions.RemoveEmptyEntries) : Array.Empty<string>(),
+            p.Experience?.Select(e => new ExperienceDto(e.Company, e.Position, e.DurationLabel, e.Description, e.StartDate?.ToString("yyyy-MM-dd"), e.EndDate?.ToString("yyyy-MM-dd"))).ToList(),
+            p.Education?.Select(ed => new EducationDto(ed.Institution, ed.Degree, ed.DurationLabel, ed.StartDate?.ToString("yyyy-MM-dd"), ed.EndDate?.ToString("yyyy-MM-dd"))).ToList(),
+            p.Files?.Select(f => new FileDto(f.FileName, f.ContentType, f.SizeBytes, f.Url)).ToList()
+        );
     }
 }
 
