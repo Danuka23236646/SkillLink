@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { getJobs, updateJob, deleteJob, uploadLogo } from "../api/jobs";
+import { getMyJobs, updateJob, deleteJob, uploadLogo } from "../api/jobs";
 import {
   Briefcase,
   MapPin,
@@ -28,7 +28,10 @@ export default function MyJobs() {
     try {
       setLoading(true);
       setError(null);
-      const data = await getJobs();
+      // Use getMyJobs instead of getJobs
+      const user = JSON.parse(localStorage.getItem('user'));
+      const employerUserId = user?.id;
+      const data = await getMyJobs({ employerUserId });
       const items = Array.isArray(data?.items) ? data.items : Array.isArray(data) ? data : [];
       setJobs(items.map(toUiJob));
     } catch (e) {

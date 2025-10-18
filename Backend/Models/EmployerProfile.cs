@@ -34,6 +34,10 @@ public class EmployerProfile
     [MaxLength(1000)]
     public string TagsCsv { get; set; } = string.Empty;
 
+
+    [MaxLength(500)]
+    public string? LogoUrl { get; set; }
+
     public List<EmployerFile> Files { get; set; } = new();
 
     public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;

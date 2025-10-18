@@ -17,8 +17,9 @@ export default function EmployerApplications({ companyName, jobId }) {
   const [detail, setDetail] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
-  // DEV: replace with a real id or pull from your auth/user store
-  const employerUserId = 1;
+  // Get the logged-in employer's user ID from localStorage
+  const user = JSON.parse(localStorage.getItem('user'));
+  const employerUserId = user?.id;
 
   useEffect(() => {
     (async () => {
@@ -138,7 +139,7 @@ export default function EmployerApplications({ companyName, jobId }) {
                 {detail.coverLetter && (
                   <div>
                     <div className="text-sm text-gray-500 mb-1">Cover letter</div>
-                    <div className="whitespace-pre-wrap text-gray-800 border rounded-md p-3 bg-gray-50">
+                    <div className="whitespace-pre-wrap break-words text-gray-800 border rounded-md p-3 bg-gray-50 max-h-32 overflow-y-auto">
                       {detail.coverLetter}
                     </div>
                   </div>

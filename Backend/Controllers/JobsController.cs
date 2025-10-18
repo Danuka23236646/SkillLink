@@ -11,6 +11,46 @@ namespace Backend.Controllers;
 [Route("api/[controller]")]
 public class JobsController : ControllerBase
 {
+    // GET /api/jobs/mine — only jobs posted by the logged-in employer
+    [HttpGet("mine")]
+    public async Task<ActionResult<object>> GetMyJobs(
+        [FromQuery] int? employerUserId = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
+    {
+        page = Math.Max(page, 1);
+        pageSize = Math.Clamp(pageSize, 1, 100);
+
+        int userId = employerUserId ?? GetEmployerUserIdOrFallback();
+        Console.WriteLine($"[DEBUG] Fetching jobs for employerUserId: {userId}");
+        var q = _db.JobPostings.Where(j => j.EmployerUserId == userId);
+        var total = await q.CountAsync();
+        var items = await q
+            .OrderByDescending(j => j.CreatedUtc)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(j => new JobResponse
+            {
+                Id = j.Id,
+                JobTitle = j.JobTitle,
+                JobType = j.JobType,
+                Location = j.Location,
+                Department = j.Department,
+                MinSalary = j.MinSalary,
+                MaxSalary = j.MaxSalary,
+                HideSalary = j.HideSalary,
+                Description = j.Description,
+                CompanyName = j.CompanyName,
+                CompanyWebsite = j.CompanyWebsite,
+                CompanyLogoUrl = j.CompanyLogoUrl,
+                CompanyDescription = j.CompanyDescription,
+                CreatedUtc = j.CreatedUtc,
+                UpdatedUtc = j.UpdatedUtc
+            })
+            .ToListAsync();
+        Console.WriteLine($"[DEBUG] Found {items.Count} jobs for employerUserId: {userId}");
+        return Ok(new { total, page, pageSize, items });
+    }
     private readonly AppDbContext _db;
     public JobsController(AppDbContext db) { _db = db; }
 
@@ -111,7 +151,7 @@ public class JobsController : ControllerBase
         }
 
         var employerUserId = GetEmployerUserIdOrFallback(); // 👈 safe fallback
-
+        Console.WriteLine($"[DEBUG] Creating job for employerUserId: {employerUserId}");
         var job = new JobPosting
         {
             JobTitle = dto.JobTitle.Trim(),
@@ -128,10 +168,10 @@ public class JobsController : ControllerBase
             CompanyDescription = dto.CompanyDescription,
             EmployerUserId = employerUserId
         };
-
+        Console.WriteLine($"[DEBUG] Job payload: {System.Text.Json.JsonSerializer.Serialize(job)}");
         _db.JobPostings.Add(job);
         await _db.SaveChangesAsync();
-
+        Console.WriteLine($"[DEBUG] Job created with ID: {job.Id}");
         return CreatedAtAction(nameof(GetOne), new { id = job.Id }, job);
     }
 

@@ -22,9 +22,14 @@ function jsonHeaders(includeDebugHeader = false) {
 // Sends X-Debug-UserId so backend can set EmployerUserId during development.
 // ─────────────────────────────────────────────────────────────────────────────
 export async function createJob(payload) {
+  // Get the logged-in user's ID
+  const user = JSON.parse(localStorage.getItem('user'));
+  const employerUserId = user?.id;
+  const headers = { "Content-Type": "application/json" };
+  if (employerUserId) headers["X-Debug-UserId"] = employerUserId;
   const res = await fetch(`${API_BASE}/api/jobs`, {
     method: "POST",
-    headers: jsonHeaders(true), // 👈 include dev header here
+    headers,
     body: JSON.stringify(payload),
   });
 
@@ -165,8 +170,22 @@ export async function applyToJob(jobId, payload) {
 }
 
 export async function getMyApplications(params = {}) {
-  const qs = new URLSearchParams(params).toString();
-  const res = await fetch(`${API_BASE}/api/applications${qs ? `?${qs}` : ""}`);
+  // DEV: add userEmail param if not present, for backend fallback
+  let userEmail = params.userEmail;
+  let token = null;
+  if (!userEmail) {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      userEmail = user?.email;
+      token = user?.token;
+    } catch {}
+  }
+  const allParams = { ...params };
+  if (userEmail) allParams.userEmail = userEmail;
+  const qs = new URLSearchParams(allParams).toString();
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const res = await fetch(`${API_BASE}/api/applications${qs ? `?${qs}` : ""}`, { headers });
   if (!res.ok) {
     const text = await res.text();
     const err = new Error("Failed to fetch applications");
@@ -196,6 +215,22 @@ export async function getApplicationById(id) {
 export async function getMyEmployerApplications(employerUserId) {
   const qs = employerUserId ? `?employerUserId=${encodeURIComponent(employerUserId)}` : '';
   const res = await fetch(`${API_BASE}/api/applications/mine${qs}`);
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+export async function getMyJobs({ employerUserId, page = 1, pageSize = 20 } = {}) {
+  // Always use the logged-in user's ID
+  const user = JSON.parse(localStorage.getItem('user'));
+  const id = employerUserId || user?.id;
+  const token = user?.token;
+  const params = new URLSearchParams();
+  if (id) params.set('employerUserId', id);
+  params.set('page', page);
+  params.set('pageSize', pageSize);
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const res = await fetch(`${API_URL}/mine?${params.toString()}`, { headers });
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }

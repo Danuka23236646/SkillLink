@@ -34,9 +34,12 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateDto dto)
         {
+            Console.WriteLine($"[DEBUG] Creating application for jobId={dto.JobId}, email={dto.Email}");
             var job = await _db.JobPostings.FindAsync(dto.JobId);
-            if (job is null) return NotFound(new { message = "Job not found" });
-
+            if (job is null) {
+                Console.WriteLine($"[DEBUG] Job not found for jobId={dto.JobId}");
+                return NotFound(new { message = "Job not found" });
+            }
             var app = new JobApplication
             {
                 JobId = dto.JobId,
@@ -48,10 +51,9 @@ namespace Backend.Controllers
                 AppliedDateUtc = DateTime.UtcNow,
                 Status = "submitted"
             };
-
             _db.JobApplications.Add(app);
             await _db.SaveChangesAsync();
-
+            Console.WriteLine($"[DEBUG] Application created with id={app.Id} for jobId={app.JobId}");
             return CreatedAtAction(nameof(GetById), new { id = app.Id }, new { id = app.Id });
         }
 
@@ -90,21 +92,22 @@ namespace Backend.Controllers
             [FromQuery] int? jobId = null,
             [FromQuery] int? employerUserId = null)
         {
-            var q = _db.JobApplications.Include(a => a.Job).AsQueryable();
+            // Only return applications for the currently authenticated user
+            var userEmail = User.FindFirstValue("email") ?? User.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrWhiteSpace(userEmail))
+            {
+                // DEV fallback: allow ?userEmail= or X-Debug-Email header
+                userEmail = HttpContext.Request.Query["userEmail"].FirstOrDefault();
+                if (string.IsNullOrWhiteSpace(userEmail))
+                {
+                    userEmail = HttpContext.Request.Headers["X-Debug-Email"].FirstOrDefault();
+                }
+            }
+            if (string.IsNullOrWhiteSpace(userEmail))
+                return Unauthorized(new { message = "User email not found in claims, query, or header." });
 
-            if (!string.IsNullOrWhiteSpace(email))
-                q = q.Where(a => a.Email == email);
-
-            if (jobId is not null)
-                q = q.Where(a => a.JobId == jobId.Value);
-
-            // If you added EmployerUserId to JobPosting, this works; otherwise remove this filter or add the column + migration.
-            if (employerUserId is not null)
-                q = q.Where(a => a.Job!.EmployerUserId == employerUserId.Value);
-
-            if (!string.IsNullOrWhiteSpace(companyName))
-                q = q.Where(a => a.Job != null && a.Job.CompanyName.ToLower() == companyName.ToLower());
-
+            var q = _db.JobApplications.Include(a => a.Job)
+                .Where(a => a.Email.ToLower() == userEmail.ToLower());
             var items = await q.OrderByDescending(a => a.AppliedDateUtc)
                 .Select(a => new
                 {
@@ -121,7 +124,8 @@ namespace Backend.Controllers
                     applicantPhone = a.Phone
                 })
                 .ToListAsync();
-
+            Console.WriteLine($"[DEBUG] Fetched {items.Count} applications for userEmail={userEmail}");
+            foreach (var i in items) Console.WriteLine($"[DEBUG] Application: id={i.id}, jobId={i.jobId}, jobTitle={i.jobTitle}, company={i.company}");
             return Ok(items);
         }
 
@@ -130,10 +134,21 @@ namespace Backend.Controllers
         public async Task<ActionResult<IEnumerable<object>>> ListForEmployer()
         {
             var employerUserId = GetEmployerUserIdOrFallback();
-
+            Console.WriteLine($"[DEBUG] Fetching employer applications for employerUserId={employerUserId}");
+            // Get job IDs posted by this employer
+            var jobIds = await _db.JobPostings
+                .Where(j => j.EmployerUserId == employerUserId)
+                .Select(j => j.Id)
+                .ToListAsync();
+            Console.WriteLine($"[DEBUG] Employer owns {jobIds.Count} jobs: {string.Join(",", jobIds)}");
+            if (jobIds.Count == 0)
+            {
+                Console.WriteLine("[DEBUG] No jobs posted by this employer.");
+                return Ok(new List<object>()); // No jobs posted, no applications
+            }
             var items = await _db.JobApplications
                 .Include(a => a.Job)
-                .Where(a => a.Job!.EmployerUserId == employerUserId)  // requires EmployerUserId on JobPosting
+                .Where(a => jobIds.Contains(a.JobId))
                 .OrderByDescending(a => a.AppliedDateUtc)
                 .Select(a => new
                 {
@@ -150,7 +165,8 @@ namespace Backend.Controllers
                     applicantPhone = a.Phone
                 })
                 .ToListAsync();
-
+            Console.WriteLine($"[DEBUG] Fetched {items.Count} applications for employerUserId={employerUserId}");
+            foreach (var i in items) Console.WriteLine($"[DEBUG] Application: id={i.id}, jobId={i.jobId}, jobTitle={i.jobTitle}, company={i.company}");
             return Ok(items);
         }
     }

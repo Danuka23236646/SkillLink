@@ -100,11 +100,13 @@ export function Navbar({ user, onLogout }) {
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
             {user?.isAuthenticated ? (
               <div className="flex items-center space-x-4">
-                <Link to={profileHref} className="text-gray-500 hover:text-gray-700" title={profileLabel}>
+                <Link to={profileHref} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-blue-50 text-gray-700 hover:text-blue-700 transition-all duration-150 shadow-sm" title={profileLabel}>
                   <User size={20} />
+                  <span className="font-medium text-sm">{profileLabel}</span>
                 </Link>
-                <button onClick={onLogout} className="text-gray-500 hover:text-gray-700">
+                <button onClick={onLogout} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-red-50 text-gray-700 hover:text-red-700 transition-all duration-150 shadow-sm">
                   <LogOut size={20} />
+                  <span className="font-medium text-sm">Logout</span>
                 </button>
               </div>
             ) : (

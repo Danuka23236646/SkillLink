@@ -103,7 +103,7 @@ public class EmployerProfilesController : ControllerBase
         e.TagsCsv = d.Tags is { Length: > 0 }
             ? string.Join(',', d.Tags.Select(t => t.Trim()).Where(t => t.Length > 0))
             : string.Empty;
-
+        e.LogoUrl = d.LogoUrl; // <-- Added for logo support
         if (e.Id == 0) e.CreatedUtc = DateTime.UtcNow;
         e.UpdatedUtc = DateTime.UtcNow;
 
@@ -131,7 +131,8 @@ public record EmployerProfileDto(
     string? AboutCompany,
     bool IsPublic,
     string[]? Tags,
-    List<EmployerFileDto>? Files
+    List<EmployerFileDto>? Files,
+    string? LogoUrl // <-- Added for logo support
 );
 
 public record EmployerFileDto(

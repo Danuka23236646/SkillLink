@@ -149,7 +149,7 @@ export function ViewJob() {
                         to={`/company/${job.companyId || job.companyName}`}
                         className="text-blue-600 hover:text-blue-800 text-sm"
                       >
-                        View Company
+                      
                       </Link>
                     </div>
                   </div>

@@ -261,7 +261,7 @@ export function JobSeekerProfile() {
                   placeholder="your.email@example.com"
                 />
               ) : (
-                <p className="flex items-center gap-2 text-gray-600">
+                <p className="flex items-center gap-2 text-gray-600 break-all">
                   <Mail className="h-4 w-4 text-gray-400" />
                   {profile?.email || user.email || "Not specified"}
                 </p>
@@ -279,7 +279,7 @@ export function JobSeekerProfile() {
                   placeholder="+1 (555) 123-4567"
                 />
               ) : (
-                <p className="flex items-center gap-2 text-gray-600">
+                <p className="flex items-center gap-2 text-gray-600 break-all">
                   <Phone className="h-4 w-4 text-gray-400" />
                   {profile?.phone || "Not specified"}
                 </p>
@@ -297,7 +297,7 @@ export function JobSeekerProfile() {
                   placeholder="San Francisco, CA"
                 />
               ) : (
-                <p className="flex items-center gap-2 text-gray-600">
+                <p className="flex items-center gap-2 text-gray-600 break-all">
                   <MapPin className="h-4 w-4 text-gray-400" />
                   {profile?.location || "Not specified"}
                 </p>
@@ -317,7 +317,7 @@ export function JobSeekerProfile() {
                 placeholder="Tell us about yourself, your experience, and what you're looking for..."
               />
             ) : (
-              <p className="text-gray-600">{profile?.about || "No description provided"}</p>
+              <p className="whitespace-pre-wrap break-words max-w-[350px] overflow-hidden text-ellipsis text-gray-600 max-h-32">{profile?.about || "No description provided"}</p>
             )}
           </div>
 

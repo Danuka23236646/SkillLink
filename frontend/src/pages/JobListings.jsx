@@ -265,7 +265,7 @@ export function JobListings({ savedJobs, setSavedJobs }) {
                     </div>
 
                     <div className="mt-4">
-                      <p className="text-sm text-gray-500 line-clamp-2">{job.description}</p>
+                      <p className="text-sm text-gray-500 line-clamp-2" style={{maxWidth: '900px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>{job.description}</p>
                     </div>
 
                     <div className="mt-4 flex flex-wrap gap-2">
